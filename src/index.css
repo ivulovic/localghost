@@ -99,13 +99,26 @@ code {
 }
 
 /*react blue
-
-
 #61dafb;
 #326ed0
 gray #303538*/
+
 .dark-background{
   background: #303538;
+}
+.red-background{
+  background: #BA3520;
+}
+.snackbar-message{
+  background: #BA3520!important;
+  color: #EDEDED;
+  padding: 10px;
+  text-align: center!important;
+}
+.snackbar-message div{
+  display: inline-block;
+  text-align: center;
+  width: 100%;
 }
 
 .overflow-auto {
@@ -209,9 +222,12 @@ gray #303538*/
   margin: 0px auto;
 }
 
+.medium-text{
+  font-size: 32px;
+}
+
 .big-text{
   font-size: 48px;
-  line-height: 100px;
 }
 
 .relative-container{
@@ -239,6 +255,10 @@ gray #303538*/
 
 .medium-line-spacing{
   line-height: 60px;
+}
+
+.big-line-spacing{
+  line-height: 100px;
 }
 
 .search-results-section{
@@ -363,13 +383,87 @@ gray #303538*/
   font-size: 25px;
   margin: 0px;
 }
+
+.color-box-settings{
+  position: relative;
+  top: 22px;
+}
+.color-box-settings-icon{
+  font-size: 30px;
+  color: white;
+}
+
 .sources{
   text-align: justify;
 }
 .source-items-list a {
   text-decoration: none;
 }
-/*Gradiesnts*/
+.source-items-list li{
+  list-style: none;
+}
+.source-link{
+  color: #BA3520;
+  font-weight: bold;
+}
+.source-link:hover{
+  color: #303538;
+  text-decoration: underline;
+}
+.bottom-space{
+  margin-bottom: 25px;
+}
+.theme-preview{
+  padding: 15px;
+  margin-right: 10px;
+}
+/**media **/
+
+@media screen and (max-width: 998px) {
+
+}
+
+@media screen and (max-width: 850px) {
+
+}
+@media screen and (max-width: 375px) {
+  .header-menu{
+    padding: 25px 0px;
+  }
+  .header-menu li{
+    width: 100%;
+    text-align: center;
+    padding-right: 48px;
+    margin-bottom: 50px;
+  }
+  .header-menu li:last-child{
+    margin-right: 0px;
+    margin-bottom: 0px;
+  }
+  .website-content{
+    margin-top: 140px;
+  }
+  .centered-content{
+    width: 100%;
+  }
+}
+/*@media screen and (max-width: 345px) {*/
+
+/*}*/
+@media screen and (max-width: 1024px) {
+  .color-box{
+    width: 100%;
+    margin-right: 0px;
+    height: auto;
+  }
+  .color-box-settings{
+    position: static;
+    top: 0px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+}
+  /*Gradiesnts*/
 
 .ocean-blue{
   background: #2E3192;

@@ -49,10 +49,10 @@ class Login extends Component{
       <div>
         <div className="relative-container">
           <div className="centered-content">
-            <h1 className="color-red big-text centered-content-data">Login</h1>
+            <h1 className="color-red big-text big-line-spacing centered-content-data">Login</h1>
 
             <form onSubmit={this.handleSubmit}>
-              <div  className="color-gray small-line-spacing inline-form-control">
+              <div  className="color-gray small-line-spacing">
                 <Grid container spacing={8} alignItems="flex-end">
                   <Grid item>
                     <TextField id="username" autoComplete="off" label="How imaginative were You?" inputRef={this.usenameField}
@@ -67,7 +67,7 @@ class Login extends Component{
                 </Grid>
               </div>
 
-              <div className="margin-top color-gray small-line-spacing inline-form-control">
+              <div className="margin-top color-gray small-line-spacing">
                 <Grid container spacing={8} alignItems="flex-end">
                   <Grid item>
                     <TextField type="password" autoComplete="off" id="password" label="Password You use everywhere" inputRef={this.passwordField}

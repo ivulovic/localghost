@@ -64,7 +64,7 @@ class Register extends Component{
         <div>
           <div className="relative-container">
             <div className="centered-content">
-              <h1 className="color-red big-text centered-content-data">Register</h1>
+              <h1 className="color-red big-text big-line-spacing centered-content-data">Register</h1>
 
               <form onSubmit={this.handleSubmit}>
                 <div  className="color-gray small-line-spacing">
@@ -101,7 +101,7 @@ class Register extends Component{
                 <div className="margin-top color-gray small-line-spacing">
                   <Grid container spacing={8} alignItems="flex-end">
                     <Grid item>
-                      <TextField type="password" autoComplete="off" id="password" label="Try not to make an error" inputRef={this.passwordFieldRepeat}
+                      <TextField type="password" autoComplete="off" id="passwordRepeat" label="Try not to make an error" inputRef={this.passwordFieldRepeat}
                                  InputProps={{
                                    startAdornment: (
                                      <InputAdornment position="start">

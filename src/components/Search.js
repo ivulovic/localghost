@@ -2,6 +2,7 @@ import React from "react";
 import {Component} from "react";
 import {withRouter} from "react-router-dom";
 import queryString from "query-string";
+import {SourceListItem} from "./SourceListItem";
 
 class Search extends Component{
 
@@ -24,31 +25,35 @@ class Search extends Component{
       {
         category:"Vanilla JavaScript",
         topics:[
-          {path:"#", title:"Badge"},
-          {path:"#", title:"Bottom Navigation"},
-          {path:"#", title:"Colors"},
-          {path:"#", title:"ES-Lint"},
-          {path:"#", title:"Range"}
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
         ]
       },
       {
         category:"Javascript and Redux",
         topics:[
-          {path:"#", title:"React-Redux Implementation"},
-          {path:"#", title:"Redux in Vanilla JavaScript"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"React-Redux Implementation"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Redux in Vanilla JavaScript"},
         ]
       }
       ];
     return (
       <div>
         {!!searchResults.length && <div className="container">
-          <span className="color-red big-text">Search term: </span><strong className="color-red big-text">{searchTerm}</strong>
+          <p className="big-line-spacing big-text color-gray">
+            Search term: <strong>{searchTerm}</strong>
+          </p>
           {searchResults.map((item, i) => (
                 <div key={i} className="search-results-wrapper">
                   <div className="search-results-section">
-                    <h3 className="search-result-title color-red">{item.category}</h3>
-                    <ul className="search-result-list">
-                      {item.topics.map((topic, j) => <li key={j}><a href={topic.path} className="small-line-spacing color-gray">{topic.title}</a></li> )}
+                    <p className="medium-line-spacing medium-text color-gray bottom-space">
+                      <strong>{item.category}</strong>
+                    </p>
+                    <ul className="source-items-list">
+                      {item.topics.map((source, i) => <SourceListItem key={i} description={source.description} link={source.link } /> )}
                     </ul>
                   </div>
                 </div>
@@ -59,7 +64,9 @@ class Search extends Component{
           <div>
            <div className="relative-container">
              <div className="container">
-               <span className="color-red big-text">Search term: </span><strong className="color-red big-text">{searchTerm}</strong>
+               <p className="big-line-spacing big-text color-gray">
+                 Search term: <strong>{searchTerm}</strong>
+               </p>
              </div>
              <div className="centered-content">
                <h1 className="color-red big-text centered-content-data">Whoops...</h1>

@@ -1,35 +1,27 @@
 import React from "react";
 import {Component} from "react";
-
+import {SourceListItem} from "../components/SourceListItem";
 export default class Source extends Component{
+
+  source = {
+    source: "Maximillian Swartzmuller",
+    items: [
+      {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
+      {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
+      {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
+      {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
+      {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
+    ]
+  }
 
   render(){
     return(
       <div className="overflow-auto">
-        <p className="medium-line-spacing big-text color-gray">
-          <strong>Maximillian Swartzmuller (41)</strong>
+        <p className="big-line-spacing big-text color-gray">
+         Source: <strong>{this.source.source} ({this.source.items.length})</strong>
         </p>
         <ul className="source-items-list">
-          <li>
-            <a target="_blank" href="http://google.com"  className="source-link small-line-spacing" >
-              <p className="color-gray">This is some description</p>
-              <strong className="color-red">https://www.youtube.com/watch?v=esnrfyXrC7A</strong>
-            </a>
-          </li>
-
-          <li>
-             <a target="_blank" href="http://google.com"  className="source-link small-line-spacing" >
-               <p className="color-gray">This is some description</p>
-               <strong className="color-red">https://react-icons.netlify.com/#/icons/fa</strong>
-             </a>
-           </li>
-
-          <li>
-            <a target="_blank" href="http://google.com"  className="source-link small-line-spacing" >
-              <p className="color-gray">This is some description</p>
-              <strong className="color-red">https://react-icons.netlify.com/#/icons/fa</strong>
-            </a>
-          </li>
+          {this.source.items.map((source, i) => <SourceListItem key={i} description={source.description} link={source.link } /> )}
         </ul>
       </div>
     )
