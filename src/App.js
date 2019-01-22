@@ -24,87 +24,28 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import Sources from "./containers/Sources";
 import Source from "./containers/Source";
-
-const drawerWidth = 240;
-
-const styles = theme => ({
-  root: {
-    display: 'flex',
-    border: 'none'
-  },
-  appBar: {
-    background:'#303538',
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginLeft: 5,
-    marginRight: 5,
-  },
-  hide: {
-    display: 'none',
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 0px',
-    background:'#303538',
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-    minHeight:'60px'
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing.unit * 3,
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
-});
+import Button from "@material-ui/core/es/Button/Button";
+import {MdChevronLeft, MdChevronRight} from "react-icons/md";
+import {FaGhost} from "react-icons/fa";
 
 class App extends Component {
 
-  state = {
-    open: false,
+  constructor(props){
+    super(props);
+    this.state = {
+      drawerOpened:false
+    };
+    this.toggleDrawer = this.toggleDrawer.bind(this);
+  }
+
+  toggleDrawer(){
+    this.setState({
+      drawerOpened: !this.state.drawerOpened,
+    });
   };
 
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleDrawerClose = () => {
-    this.setState({ open: false });
-  };
 
   render() {
-    const { classes, theme } = this.props;
-    const { open } = this.state;
 
     let menuLinks = [
       {path:"/register", label:"Register"},
@@ -114,77 +55,48 @@ class App extends Component {
 
     return (
       <BrowserRouter history={browserHistory}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={classNames(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar disableGutters={!open}>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerOpen}
-              className={classNames(classes.menuButton, open && classes.hide)}>
-              {/*<MenuIcon />*/}
-              <ChevronRightIcon />
-            </IconButton>
-            <Header/>
-            </Toolbar>
-        </AppBar>
-        <Drawer
-          className={classes.drawer}
-          variant="persistent"
-          anchor="left"
-          open={open}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerHeader}>
-            <div className="menu-header">
-                <strong>MENU</strong>
-            </div>
-            <span className="toolbar-white-button color-white">
-              <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon />}
-            </IconButton>
-            </span>
-          </div>
-
-          <Divider />
-
-          <List className="no-padding side-menu-list">
-            {menuLinks.map((link, index) => (
-              <ListItem  button key={index}>
-                {/*<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>*/}
-                <NavLink to={link.path}>{link.label}</NavLink>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-
-        <main className={classNames(classes.content, {
-            [classes.contentShift]: open,
-          })}>
-          <div className="website-content">
-            <Switch>
-              <Route exact path="/" component={Home}/>
-              <Route path="/search" component={Search} />
-              <Route path="/login" component={Login}/>
-              <Route path="/register" component={Register}/>
-              <Route path="/sources" component={Sources} exact/>
-              <Route path="/sources/:id" component={Source}/>
-              <Route component={NotFound} />
-            </Switch>
-          </div>
-        </main>
+      <div>
+         <Drawer open={this.state.drawerOpened} onClose={this.toggleDrawer}>
+           <div
+             tabIndex={0}
+             role="button"
+             onClick={this.toggleDrawer}
+             onKeyDown={this.toggleDrawer}>
+             <ul className="header-menu drawer-header">
+               <li>
+                 <NavLink activeClassName="activeLink" to="/">
+                   <span className="logo-text-header"><span className="logo-ghost-icon"><FaGhost size={25}/></span> localghost</span>
+                 </NavLink>
+               </li>
+               <li>
+                 <button onClick={this.toggleDrawer} className="open-drawer-button"><MdChevronRight size={30}/> </button>
+               </li>
+             </ul>
+             <List className="no-padding side-menu-list">
+               {menuLinks.map((link, index) => (
+                 <ListItem  button key={index}>
+                   <NavLink to={link.path}>{link.label}</NavLink>
+                 </ListItem>
+               ))}
+             </List>
+           </div>
+         </Drawer>
+       <Header toggleDrawer={this.toggleDrawer}/>
+        <div className="website-content">
+          <Switch>
+            <Route exact path="/" component={Sources}/>
+            <Route path="/search" component={Search} />
+            <Route path="/login" component={Login}/>
+            <Route path="/register" component={Register}/>
+            <Route path="/sources" component={Sources} exact/>
+            <Route path="/sources/:id" component={Source}/>
+            <Route component={NotFound} />
+          </Switch>
+        </div>
       </div>
   </BrowserRouter>
   );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(App);
+export default App;

@@ -126,6 +126,41 @@ gray #303538*/
 }
 
 /**MENU**/
+.open-drawer-button{
+  color: #EDEDED;
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px 8px 5px 7px;
+  margin: 0px 10px;
+  position: relative;
+  bottom: 3px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -ms-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+  bottom: 5px;
+}
+.open-drawer-button:hover{
+   background: #2f2c2c; 
+}
+
+.drawer-header{
+  background: #181A1C;
+  color: #EDEDED;
+  padding: 32px 15px!important;
+}
+.drawer-header .open-drawer-button{
+  padding: 5px 6px 5px 8px;
+  bottom: 5px;
+  right: -30px;
+}
+.drawer-header .open-drawer-button:hover{
+  background: #2f2c2c;
+}
 .menu-header{
   width: 100%;
   color: white;
@@ -133,6 +168,7 @@ gray #303538*/
 .logo-ghost-icon{
   position: relative;
   top: 5px;
+  margin-right: 10px;
 }
 
 .logo-text-header{
@@ -308,7 +344,7 @@ gray #303538*/
   width: 100%;
 }
 .website-content{
-  margin-top: 80px;
+  padding: 0px 10px;
 }
 
 .no-padding{
@@ -439,9 +475,6 @@ gray #303538*/
   .header-menu li:last-child{
     margin-right: 0px;
     margin-bottom: 0px;
-  }
-  .website-content{
-    margin-top: 140px;
   }
   .centered-content{
     width: 100%;

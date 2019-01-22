@@ -128,9 +128,9 @@ export class ColorBox extends React.Component{
       {id:'mystic-muave', name: 'Mystic Muave'}
     ];
     const ITEM_HEIGHT = 48;
-
+    // to={"/sources/"+this.props.id}
     return (
-      <NavLink to={"/sources/"+this.props.id}>
+      <div className="inline-block" onClick={this.props.onSourceInfoView}>
         <div className={"color-box relative "+this.props.theme}>
           <p className="color-box-counter">{this.props.count}</p>
           <p className="color-box-title">{this.props.title}</p>
@@ -141,7 +141,7 @@ export class ColorBox extends React.Component{
                 aria-haspopup="true"
                 onClick={this.openPinDialog}
                 className="color-white no-padding">
-                <span className="color-box-settings-icon"> {this.props.pinned ? <TiPinOutline size={28} /> : <TiPin size={28} />} </span>
+                <span className="color-box-settings-icon"> {this.props.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />} </span>
               </Button>
 
               <Dialog
@@ -264,7 +264,7 @@ export class ColorBox extends React.Component{
             </div>
           </div>
         </div>
-      </NavLink>
+      </div>
     )
   }
 }

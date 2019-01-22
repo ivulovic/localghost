@@ -1,11 +1,18 @@
 import React from "react";
 import {Component} from "react";
 import {ColorBox} from "../components/ColorBox";
-import {GoTextSize} from "react-icons/go";
+import {GoSearch, GoTextSize} from "react-icons/go";
 import Divider from "@material-ui/core/es/Divider/Divider";
 import {TextField} from "@material-ui/core";
 import InputAdornment from "@material-ui/core/es/InputAdornment/InputAdornment";
 import Snackbar from "@material-ui/core/es/Snackbar/Snackbar";
+import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
+import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
+import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
+import Dialog from "@material-ui/core/es/Dialog/Dialog";
+import Button from "@material-ui/core/es/Button/Button";
+import {SourceListItem} from "../components/SourceListItem";
+import {SourceInfo} from "./SourceInfo";
 
 export default class Sources extends Component{
 
@@ -13,14 +20,48 @@ export default class Sources extends Component{
   constructor(props) {
     super(props);
     this.state = {
+      sourceInfoDialogOpened: false,
+      sourceDialogScroll:'paper',
       snackbarOpened: false,
       verticalSnackBar:'top',
       horizontalSnackbar:'center',
       snackbarMessage:'',
+      originalSources: [
+        {id:1, theme:"reflex-silver", title:"Maximillian Swartzmuller", count:"41", pinned:false,
+          items: [
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
+          ]},
+        {id:2, theme:"ocean-blue", title:"Angular Deploy", count:"12", pinned: false,
+          items: [
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
+          ]}
+      ],
       sources: [
-        {id:1, theme:"reflex-silver", title:"Maximillian Swartzmuller", count:"41", pinned:false},
-        {id:2, theme:"ocean-blue", title:"Angular Deploy", count:"12", pinned: true}
-      ]
+        {id:1, theme:"reflex-silver", title:"Maximillian Swartzmuller", count:"41", pinned:false,
+          items: [
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
+          ]},
+        {id:2, theme:"ocean-blue", title:"Angular Deploy", count:"12", pinned: false,
+          items: [
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
+            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
+          ]}
+      ],
     };
     this.handleThemeChange = this.handleThemeChange.bind(this);
     this.handleSourceNameChange = this.handleSourceNameChange.bind(this);
@@ -29,7 +70,16 @@ export default class Sources extends Component{
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlSnackbarOpening = this.handlSnackbarOpening.bind(this);
     this.handleSnackbarClosing = this.handleSnackbarClosing.bind(this);
+    this.filterSources = this.filterSources.bind(this);
+    this.closeSourceInfoDialog = this.closeSourceInfoDialog.bind(this);
+    this.openSourceInfoDialog = this.openSourceInfoDialog.bind(this);
     this.sourceName = React.createRef();
+  }
+  openSourceInfoDialog(source){
+    this.setState({ ...this.state, sourceInfoDialogOpened: true, selectedSource:source });
+  }
+  closeSourceInfoDialog(){
+    this.setState({ ...this.state, sourceInfoDialogOpened: false });
   }
 
   handlSnackbarOpening (vertical, horizontal, message) {
@@ -95,6 +145,22 @@ export default class Sources extends Component{
       this.handlSnackbarOpening('top', 'center', 'Please provide a valid name.')
     }
   }
+
+  filterSources(event){
+    event.preventDefault();
+    let filterValue = event.target.value;
+    if(filterValue && filterValue.trim()){
+      this.setState({
+        ...this.state,
+        sources: this.state.sources.filter(source => source.title.trim().toLowerCase().indexOf(filterValue.trim().toLowerCase())>=0)
+      });
+    } else {
+      this.setState({
+        ...this.state,
+          sources: this.state.originalSources
+      })
+    }
+  }
   render(){
     const pinned = this.state.sources.filter((source,i)=> source.pinned);
     return(
@@ -143,14 +209,34 @@ export default class Sources extends Component{
           </div>
         )}
 
-        {Boolean(this.state.sources.length) && (
+        <div className="bottom-space">
+          <p className="color-gray medium-line-spacing medium-text">Sources</p>
+        </div>
+
+        <form onSubmit={this.filterSources}>
+          <div className="margin-top color-gray small-line-spacing bottom-space">
+            <TextField type="text" autoComplete="off" id="searchSource" label="Search source"
+                       fullWidth
+                       onKeyUp={this.filterSources}
+                       InputProps={{
+                         startAdornment: (
+                           <InputAdornment position="start">
+                             <GoSearch />
+                           </InputAdornment>
+                         ),
+                       }}
+            />
+          </div>
+        </form>
+
+        {this.state.sources.map((source,i)=><ColorBox onSourceInfoView={()=>this.openSourceInfoDialog(source)} key={i} onSourcePin={this.handleSourcePin} onSourceRemoval={this.handleSourceRemoval} onSourceNameChange={this.handleSourceNameChange} onThemeChange = {this.handleThemeChange} id={source.id} pinned={source.pinned} theme={source.theme} count={source.count} title={source.title}/>)}
+        {!Boolean(this.state.sources.length) && (
           <div className="bottom-space">
-            <p className="color-gray medium-line-spacing medium-text">Sources</p>
+            <p className="color-gray medium-line-spacing">No sources found.</p>
           </div>
         )}
 
-        {this.state.sources.map((source,i)=><ColorBox key={i} onSourcePin={this.handleSourcePin} onSourceRemoval={this.handleSourceRemoval} onSourceNameChange={this.handleSourceNameChange} onThemeChange = {this.handleThemeChange} id={source.id} pinned={source.pinned} theme={source.theme} count={source.count} title={source.title}/>)}
-
+        <SourceInfo onSourceInfoDialogClose={this.closeSourceInfoDialog} sourceInfoDialogOpened={this.state.sourceInfoDialogOpened} source={this.state.selectedSource}/>
       </div>
     )
   }
