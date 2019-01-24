@@ -2,7 +2,7 @@ import React from "react";
 import {Component} from "react";
 import {withRouter} from "react-router-dom";
 import queryString from "query-string";
-import {SourceListItem} from "./SourceListItem";
+import {ProjectListItem} from "./ProjectListItem";
 
 class Search extends Component{
 
@@ -52,8 +52,8 @@ class Search extends Component{
                     <p className="medium-line-spacing medium-text color-gray bottom-space">
                       <strong>{item.category}</strong>
                     </p>
-                    <ul className="source-items-list">
-                      {item.topics.map((source, i) => <SourceListItem key={i} description={source.description} link={source.link } /> )}
+                    <ul className="project-items-list">
+                      {item.topics.map((project, i) => <ProjectListItem key={i} description={project.description} link={project.link } /> )}
                     </ul>
                   </div>
                 </div>

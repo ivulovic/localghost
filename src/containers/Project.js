@@ -14,7 +14,7 @@ import {TextField} from "@material-ui/core";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 import {TiPin, TiPinOutline} from "react-icons/ti";
 
-export class ColorBox extends React.Component{
+export class Project extends React.Component{
 
   constructor(props){
     super(props);
@@ -28,15 +28,15 @@ export class ColorBox extends React.Component{
     this.closeThemePicker = this.closeThemePicker.bind(this);
     this.openEditDialog = this.openEditDialog.bind(this);
     this.closeEditDialog = this.closeEditDialog.bind(this);
-    this.confirmEditingSource = this.confirmEditingSource.bind(this);
+    this.confirmEditingProject = this.confirmEditingProject.bind(this);
     this.preventClose = this.preventClose.bind(this);
     this.openRemoveDialog = this.openRemoveDialog.bind(this);
     this.closeRemoveDialog = this.closeRemoveDialog.bind(this);
-    this.confirmSourceRemoval = this.confirmSourceRemoval.bind(this);
+    this.confirmProjectRemoval = this.confirmProjectRemoval.bind(this);
     this.openPinDialog = this.openPinDialog.bind(this);
     this.closePinDialog = this.closePinDialog.bind(this);
-    this.confirmSourcePin = this.confirmSourcePin.bind(this);
-    this.editedSourceName = React.createRef();
+    this.confirmProjectPin = this.confirmProjectPin.bind(this);
+    this.editedProjectName = React.createRef();
    }
   preventClose(event){
     event.stopPropagation();
@@ -64,11 +64,11 @@ export class ColorBox extends React.Component{
     this.preventClose(event);
     this.setState({ editDialogOpened: false });
   };
-  confirmEditingSource(event){
-    let newSourceName = this.editedSourceName.current.value;
-    if(newSourceName && newSourceName.trim()){
-      if(newSourceName.trim() !== this.props.title){
-        this.props.onSourceNameChange(this.props.id, newSourceName.trim());
+  confirmEditingProject(event){
+    let newProjectName = this.editedProjectName.current.value;
+    if(newProjectName && newProjectName.trim()){
+      if(newProjectName.trim() !== this.props.title){
+        this.props.onProjectNameChange(this.props.id, newProjectName.trim());
       }
     }
     this.closeEditDialog(event);
@@ -82,8 +82,8 @@ export class ColorBox extends React.Component{
     this.preventClose(event);
     this.setState({ removeDialogOpened: false });
   };
-  confirmSourceRemoval(event){
-    this.props.onSourceRemoval(this.props.id);
+  confirmProjectRemoval(event){
+    this.props.onProjectRemoval(this.props.id);
     this.closeRemoveDialog(event);
   }
 
@@ -95,8 +95,8 @@ export class ColorBox extends React.Component{
     this.preventClose(event);
     this.setState({ pinDialogOpened: false });
   };
-  confirmSourcePin(event){
-    this.props.onSourcePin(this.props.id);
+  confirmProjectPin(event){
+    this.props.onProjectPin(this.props.id);
     this.closePinDialog(event);
   }
 
@@ -128,11 +128,11 @@ export class ColorBox extends React.Component{
       {id:'mystic-muave', name: 'Mystic Muave'}
     ];
     const ITEM_HEIGHT = 48;
-    // to={"/sources/"+this.props.id}
+
     return (
-      <div className="inline-block" onClick={this.props.onSourceInfoView}>
+      <NavLink  to={"/projects/"+this.props.id}>
         <div className={"color-box relative "+this.props.theme}>
-          <p className="color-box-counter">{this.props.count}</p>
+          <p className="color-box-counter">{this.props.count}%</p>
           <p className="color-box-title">{this.props.title}</p>
 
           <div className="color-box-settings">
@@ -151,17 +151,17 @@ export class ColorBox extends React.Component{
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
               >
-                <DialogTitle id="alert-dialog-title">{this.props.pinned ? 'Unpin ':'Pin '} Source</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{this.props.pinned ? 'Unpin ':'Pin '} Project</DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
-                    This means that your source <strong className="color-gray">{this.props.title}</strong> {this.props.pinned ? 'will not be shown anymore' : 'will appear above all other sources'} in pinned section.
+                    This means that your project <strong className="color-gray">{this.props.title}</strong> {this.props.pinned ? 'will not be shown anymore' : 'will appear above all other projects'} in pinned section.
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.closePinDialog} color="primary">
                     Cancel
                   </Button>
-                  <Button onClick={this.confirmSourcePin} color="primary" autoFocus>
+                  <Button onClick={this.confirmProjectPin} color="primary" autoFocus>
                     Confirm
                   </Button>
                 </DialogActions>
@@ -206,28 +206,28 @@ export class ColorBox extends React.Component{
                 onClose={this.closeEditDialog}
                 aria-labelledby="form-dialog-title"
                 onClick={this.preventClose}>
-                <DialogTitle id="form-dialog-title">Update Source Name</DialogTitle>
+                <DialogTitle id="form-dialog-title">Update Project Name</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    You are about to change source name of <strong className="color-gray"> {this.props.title} </strong> with the new one:
+                    You are about to change project name of <strong className="color-gray"> {this.props.title} </strong> with the new one:
                   </DialogContentText>
                   <TextField
                     autoFocus
                     autoComplete="off"
                     margin="dense"
                     id="name"
-                    label="Source name"
+                    label="Project name"
                     type="text"
                     defaultValue={this.props.title}
                     fullWidth
-                    inputRef={this.editedSourceName}
+                    inputRef={this.editedProjectName}
                   />
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.closeEditDialog} color="primary">
                     Cancel
                   </Button>
-                  <Button onClick={this.confirmEditingSource} color="primary">
+                  <Button onClick={this.confirmEditingProject} color="primary">
                     Save
                   </Button>
                 </DialogActions>
@@ -246,17 +246,17 @@ export class ColorBox extends React.Component{
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
               >
-                <DialogTitle id="alert-dialog-title">Confirm Source Removal</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Confirm Project Removal</DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
-                    This means that your source <strong className="color-gray">{this.props.title}</strong> and its items will be removed forever.
+                    This means that your project <strong className="color-gray">{this.props.title}</strong> and its items will be removed forever.
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={this.closeRemoveDialog} color="primary">
                     Cancel
                   </Button>
-                  <Button onClick={this.confirmSourceRemoval} color="primary" autoFocus>
+                  <Button onClick={this.confirmProjectRemoval} color="primary" autoFocus>
                     Confirm
                   </Button>
                 </DialogActions>
@@ -264,7 +264,7 @@ export class ColorBox extends React.Component{
             </div>
           </div>
         </div>
-      </div>
+      </NavLink>
     )
   }
 }

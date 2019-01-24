@@ -3,29 +3,18 @@ import {Route, Switch, BrowserRouter, NavLink} from "react-router-dom";
 import { browserHistory } from "react-dom";
 import './App.css';
 
-import Home from "./components/Home";
 import Search from "./components/Search";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import {Header} from "./components/Header";
 import {NotFound} from "./components/NotFound";
 
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
-import Sources from "./containers/Sources";
-import Source from "./containers/Source";
-import Button from "@material-ui/core/es/Button/Button";
-import {MdChevronLeft, MdChevronRight} from "react-icons/md";
+import Projects from "./containers/Projects";
+import ProjectInfo from "./containers/ProjectInfo";
+import {MdChevronRight} from "react-icons/md";
 import {FaGhost} from "react-icons/fa";
 
 class App extends Component {
@@ -50,7 +39,7 @@ class App extends Component {
     let menuLinks = [
       {path:"/register", label:"Register"},
       {path:"/login", label:"Login"},
-      {path:"/sources", label:"Sources"},
+      {path:"/projects", label:"Projects"},
     ];
 
     return (
@@ -80,16 +69,16 @@ class App extends Component {
                ))}
              </List>
            </div>
-         </Drawer>
-       <Header toggleDrawer={this.toggleDrawer}/>
+        </Drawer>
+        <Header toggleDrawer={this.toggleDrawer}/>
         <div className="website-content">
           <Switch>
-            <Route exact path="/" component={Sources}/>
+            <Route exact path="/" component={Projects}/>
             <Route path="/search" component={Search} />
             <Route path="/login" component={Login}/>
             <Route path="/register" component={Register}/>
-            <Route path="/sources" component={Sources} exact/>
-            <Route path="/sources/:id" component={Source}/>
+            <Route path="/projects" component={Projects} exact/>
+            <Route path="/projects/:id" component={ProjectInfo}/>
             <Route component={NotFound} />
           </Switch>
         </div>
