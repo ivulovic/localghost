@@ -13,6 +13,7 @@ import DialogContentText from "@material-ui/core/es/DialogContentText/DialogCont
 import {TextField} from "@material-ui/core";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 import {TiPin, TiPinOutline} from "react-icons/ti";
+import themes from "../utils/themes";
 
 export class Project extends React.Component{
 
@@ -101,56 +102,29 @@ export class Project extends React.Component{
   }
 
   render(){
-    const { themePickerAnchor } = this.state;
-    const options = [
-      {id:'reflex-silver', name: 'Reflex Silver'},
-      {id:'ocean-blue', name: 'Ocean Blue'},
-      {id:'new-leaf', name: 'New Leaf'},
-      {id:'leaf', name: 'Leaf'},
-      {id:'ultramarine', name: 'Ultramarine'},
-      {id:'pixle-dust', name: 'Pixle Dust'},
-      {id:'neon-glow', name: 'Neon Glow'},
-      {id:'spring-greens', name: 'Spring Greens'},
-      {id:'luscious-lime', name: 'Luscious Lime'},
-      {id:'firebrick', name: 'Firebrick'},
-      {id:'mars', name: 'Mars'},
-      {id:'sanguine', name: 'Sanguine'},
-      {id:'fizzy-peach', name: 'Fizzy Peach'},
-      {id:'pink-sugar', name: 'Pink Sugar'},
-      {id:'fresh-papaya', name: 'Fresh Papaya'},
-      {id:'lemon-drizzle', name: 'Lemon Drizzle'},
-      {id:'victoria-purple', name: 'Victoria Purple'},
-      {id:'purple-lake', name: 'Purple Lake'},
-      {id:'evening-light', name: 'Evening Light'},
-      {id:'sweet-dream', name: 'Sweet Dream'},
-      {id:'pink', name: 'Pink'},
-      {id:'berry-smoothie', name: 'Berry Smoothie'},
-      {id:'mystic-muave', name: 'Mystic Muave'}
-    ];
+    const options = themes;
     const ITEM_HEIGHT = 48;
-
     return (
       <NavLink  to={"/projects/"+this.props.id}>
         <div className={"color-box relative "+this.props.theme}>
           <p className="color-box-counter">{this.props.count}%</p>
           <p className="color-box-title">{this.props.title}</p>
-
           <div className="color-box-settings">
             <div>
-              <Button
-                aria-haspopup="true"
-                onClick={this.openPinDialog}
-                className="color-white no-padding">
+              <Button onClick={this.openPinDialog} className="color-white no-padding">
                 <span className="color-box-settings-icon"> {this.props.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />} </span>
               </Button>
+              <Button onClick={this.openThemePicker} className="color-white no-padding">
+                <span className="color-box-settings-icon"> <MdPalette/> </span>
+              </Button>
+              <Button onClick={this.openEditDialog} className="color-white no-padding">
+                <span className="color-box-settings-icon"> <FaPaintRoller size={26}/> </span>
+              </Button>
+              <Button onClick={this.openRemoveDialog} className="color-white no-padding">
+                <span className="color-box-settings-icon"> <GoFlame size={28} /> </span>
+              </Button>
 
-              <Dialog
-                open={this.state.pinDialogOpened}
-                onClose={this.closePinDialog}
-                onClick={this.preventClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
+              <Dialog open={this.state.pinDialogOpened} onClose={this.closePinDialog} onClick={this.preventClose}>
                 <DialogTitle id="alert-dialog-title">{this.props.pinned ? 'Unpin ':'Pin '} Project</DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
@@ -158,34 +132,12 @@ export class Project extends React.Component{
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.closePinDialog} color="primary">
-                    Cancel
-                  </Button>
-                  <Button onClick={this.confirmProjectPin} color="primary" autoFocus>
-                    Confirm
-                  </Button>
+                  <Button onClick={this.closePinDialog} color="primary" autoFocus> Cancel </Button>
+                  <Button onClick={this.confirmProjectPin} color="primary"> Confirm </Button>
                 </DialogActions>
               </Dialog>
 
-              <Button
-                aria-owns={themePickerAnchor ? 'simple-menu' : undefined}
-                aria-haspopup="true"
-                onClick={this.openThemePicker}
-                className="color-white no-padding"
-              >
-                <span className="color-box-settings-icon"> <MdPalette/> </span>
-              </Button>
-              <Menu
-                id="simple-menu"
-                anchorEl={themePickerAnchor}
-                open={Boolean(themePickerAnchor)}
-                onClose={this.closeThemePicker}
-                PaperProps={{
-                  style: {
-                    maxHeight: ITEM_HEIGHT * 4.5,
-                    width: 200,
-                  },
-                }}>
+              <Menu anchorEl={this.state.themePickerAnchor} open={Boolean(this.state.themePickerAnchor)} onClose={this.closeThemePicker} PaperProps={{style: {maxHeight: ITEM_HEIGHT * 4.5, width: 200}}}>
                 {options.map((option, j) => (
                   <MenuItem key={j} selected={option.id === this.props.theme} className="color-gray" onClick={(event)=>this.handleThemeChange(event, option.id, this.props.id)}>
                     <span className={'theme-preview '+option.id}> </span> {option.name}
@@ -193,59 +145,21 @@ export class Project extends React.Component{
                 ))}
               </Menu>
 
-              <Button
-                aria-owns={themePickerAnchor ? 'simple-menu' : undefined}
-                aria-haspopup="true"
-                onClick={this.openEditDialog}
-                className="color-white no-padding">
-                <span className="color-box-settings-icon"> <FaPaintRoller size={26}/> </span>
-              </Button>
-
-              <Dialog
-                open={this.state.editDialogOpened}
-                onClose={this.closeEditDialog}
-                aria-labelledby="form-dialog-title"
-                onClick={this.preventClose}>
+              <Dialog open={this.state.editDialogOpened} onClose={this.closeEditDialog} onClick={this.preventClose}>
                 <DialogTitle id="form-dialog-title">Update Project Name</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
                     You are about to change project name of <strong className="color-gray"> {this.props.title} </strong> with the new one:
                   </DialogContentText>
-                  <TextField
-                    autoFocus
-                    autoComplete="off"
-                    margin="dense"
-                    id="name"
-                    label="Project name"
-                    type="text"
-                    defaultValue={this.props.title}
-                    fullWidth
-                    inputRef={this.editedProjectName}
-                  />
+                  <TextField autoFocus autoComplete="off" id="name" label="Project name" type="text" defaultValue={this.props.title} fullWidth inputRef={this.editedProjectName}/>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.closeEditDialog} color="primary">
-                    Cancel
-                  </Button>
-                  <Button onClick={this.confirmEditingProject} color="primary">
-                    Save
-                  </Button>
+                  <Button onClick={this.closeEditDialog} color="primary"> Cancel </Button>
+                  <Button onClick={this.confirmEditingProject} color="primary"> Save </Button>
                 </DialogActions>
               </Dialog>
 
-              <Button
-                aria-haspopup="true"
-                onClick={this.openRemoveDialog}
-                className="color-white no-padding">
-                <span className="color-box-settings-icon"> <GoFlame size={28} /> </span>
-              </Button>
-              <Dialog
-                open={this.state.removeDialogOpened}
-                onClose={this.closeRemoveDialog}
-                onClick={this.preventClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
+              <Dialog open={this.state.removeDialogOpened} onClose={this.closeRemoveDialog} onClick={this.preventClose}>
                 <DialogTitle id="alert-dialog-title">Confirm Project Removal</DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
@@ -253,12 +167,8 @@ export class Project extends React.Component{
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.closeRemoveDialog} color="primary">
-                    Cancel
-                  </Button>
-                  <Button onClick={this.confirmProjectRemoval} color="primary" autoFocus>
-                    Confirm
-                  </Button>
+                  <Button onClick={this.closeRemoveDialog} color="primary"> Cancel </Button>
+                  <Button onClick={this.confirmProjectRemoval} color="primary" autoFocus> Confirm </Button>
                 </DialogActions>
               </Dialog>
             </div>

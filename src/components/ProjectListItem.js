@@ -1,10 +1,12 @@
 import React from "react";
+import {IoMdLink} from "react-icons/io";
+import {FaLink} from "react-icons/fa";
 
 export const ProjectListItem = (props) => (
   <li className="bottom-space">
-    <p className="color-gray">{props.description}</p>
-    <a target="_blank" href={props.link}  className="project-link small-line-spacing" >
-      {props.link}
+    <a target="_blank" href={props.link}  className="small-line-spacing project-link" >
+      <FaLink size={14}/> Link
     </a>
+    <span className="color-gray">{props.description} </span>
   </li>
 );
