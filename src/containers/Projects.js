@@ -16,8 +16,6 @@ import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
 import themes from "../utils/themes";
 
 export default class Projects extends Component{
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -147,7 +145,7 @@ export default class Projects extends Component{
         this.projectName.current.value = '';
         this.closeCreateProjectDialog();
       } else {
-        this.handlSnackbarOpening('top', 'center', 'ProjectInfo with such name already exists.')
+        this.handlSnackbarOpening('top', 'center', 'Project with such name already exists.')
       }
     } else {
       this.handlSnackbarOpening('top', 'center', 'Please provide a valid name.')

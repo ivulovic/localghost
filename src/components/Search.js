@@ -2,7 +2,7 @@ import React from "react";
 import {Component} from "react";
 import {withRouter} from "react-router-dom";
 import queryString from "query-string";
-import {ProjectListItem} from "./ProjectListItem";
+import {ProjectLinkItem} from "./ProjectLinkItem";
 
 class Search extends Component{
 
@@ -53,7 +53,7 @@ class Search extends Component{
                       <strong>{item.category}</strong>
                     </p>
                     <ul className="project-items-list">
-                      {item.topics.map((project, i) => <ProjectListItem key={i} description={project.description} link={project.link } /> )}
+                      {item.topics.map((project, i) => <ProjectLinkItem key={i} description={project.description} link={project.link } /> )}
                     </ul>
                   </div>
                 </div>
