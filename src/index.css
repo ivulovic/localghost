@@ -341,7 +341,7 @@ gray #303538*/
   color:#EDEDED;
 }
 .color-gray{
-  color: #303538;
+  color: #303538!important;
 }
 
 .color-red{
@@ -358,7 +358,9 @@ gray #303538*/
 .no-padding{
   padding: 0px!important;
 }
-
+.no-radius{
+  border-radius: 0px!important;
+}
 .side-menu-list > div{
   padding: 0px;
   display: inline-block;
@@ -466,6 +468,12 @@ gray #303538*/
 .small-bottom-space{
   margin-bottom: 10px;
 }
+.small-margin-top{
+  margin-top: 10px;
+}
+.small-space-after{
+  margin-right: 10px!important;
+}
 .uppercase{
   text-transform: uppercase;
 }
@@ -475,8 +483,18 @@ gray #303538*/
   font-size: 22px;
   margin-bottom: 10px;
 }
+.icon-only-button{
+  min-width: 0px!important;
+  font-size: 18px!important;
+  color: #303538!important;
+  border:none!important;
+  padding: 5px 10px!important;
+}
 .space-after{
   margin-right: 25px!important;
+}
+.minimum-space-after{
+  margin-right: 5px!important;
 }
 .theme-preview{
   padding: 15px;
@@ -505,6 +523,9 @@ gray #303538*/
 }
 .no-shadow{
   box-shadow: none;
+}
+.no-border{
+  border: none!important;
 }
 .no-padding-menu ul{
   padding: 0px;

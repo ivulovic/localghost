@@ -1,180 +1,226 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
-import {MdPalette} from "react-icons/md";
-import Button from "@material-ui/core/es/Button/Button";
-import Menu from "@material-ui/core/es/Menu/Menu";
-import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
-import {FaPaintRoller} from "react-icons/fa";
-import {GoFlame} from "react-icons/go";
-import Dialog from "@material-ui/core/es/Dialog/Dialog";
-import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
-import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
-import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
-import {TextField} from "@material-ui/core";
-import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
-import {TiPin, TiPinOutline} from "react-icons/ti";
-import themes from "../utils/themes";
+import {Component} from "react";
+import {ProjectLinkItem} from "../components/ProjectLinkItem";
+import {FaRegFile} from "react-icons/fa";
+import Typography from "@material-ui/core/es/Typography/Typography";
+import AppBar from "@material-ui/core/es/AppBar/AppBar";
+import Tabs from "@material-ui/core/es/Tabs/Tabs";
+import Tab from "@material-ui/core/es/Tab/Tab";
+import {GoLinkExternal, GoNote, GoSearch, GoTasklist} from "react-icons/go";
+import {ProjectFileItem} from "../components/ProjectFileItem";
+import Toolbar from "@material-ui/core/es/Toolbar/Toolbar";
+import {CreateTask} from "../components/project/tasks/CreateTask";
+import {TaskList} from "../components/project/tasks/TaskList";
+import {NoteList} from "../components/project/notes/NoteList";
+import {CreateNote} from "../components/project/notes/CreateNote";
 
-export class Project extends React.Component{
+const TabContainer = (props) => {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+
+export default class Project extends Component{
 
   constructor(props){
     super(props);
+    this.changeTab = this.changeTab.bind(this);
+    this.createTask = this.createTask.bind(this);
+    this.removeTask = this.removeTask.bind(this);
+    this.updateTaskDescription = this.updateTaskDescription.bind(this);
+    this.updateTaskStatus = this.updateTaskStatus.bind(this);
+    this.createNote = this.createNote.bind(this);
+    this.removeNote = this.removeNote.bind(this);
+    this.updateNoteDescription = this.updateNoteDescription.bind(this);
+
     this.state = {
-      anchorEl: null,
-      editDialogOpened:false,
-      removeDialogOpened:false,
-      pinDialogOpened:false
-    };
-    this.openThemePicker = this.openThemePicker.bind(this);
-    this.closeThemePicker = this.closeThemePicker.bind(this);
-    this.openEditDialog = this.openEditDialog.bind(this);
-    this.closeEditDialog = this.closeEditDialog.bind(this);
-    this.confirmEditingProject = this.confirmEditingProject.bind(this);
-    this.preventClose = this.preventClose.bind(this);
-    this.openRemoveDialog = this.openRemoveDialog.bind(this);
-    this.closeRemoveDialog = this.closeRemoveDialog.bind(this);
-    this.confirmProjectRemoval = this.confirmProjectRemoval.bind(this);
-    this.openPinDialog = this.openPinDialog.bind(this);
-    this.closePinDialog = this.closePinDialog.bind(this);
-    this.confirmProjectPin = this.confirmProjectPin.bind(this);
-    this.editedProjectName = React.createRef();
-   }
-  preventClose(event){
-    event.stopPropagation();
-    event.preventDefault();
-  }
-  openThemePicker(event){
-    this.preventClose(event);
-    this.setState({ themePickerAnchor: event.currentTarget });
-  };
-  closeThemePicker(event){
-    this.preventClose(event);
-    this.setState({ themePickerAnchor: null });
-  }
-  handleThemeChange(event, theme, id){
-    this.preventClose(event);
-    this.setState({ themePickerAnchor: null });
-    this.props.onThemeChange(id, theme);
-  };
-
-  openEditDialog (event) {
-    this.preventClose(event);
-    this.setState({ editDialogOpened: true });
-  };
-  closeEditDialog (event) {
-    this.preventClose(event);
-    this.setState({ editDialogOpened: false });
-  };
-  confirmEditingProject(event){
-    let newProjectName = this.editedProjectName.current.value;
-    if(newProjectName && newProjectName.trim()){
-      if(newProjectName.trim() !== this.props.title){
-        this.props.onProjectNameChange(this.props.id, newProjectName.trim());
+      activeTab:0,
+      project: {
+        project: "Maximillian Swartzmuller",
+        tasks:[
+          {id:1, status:false, description:"This is some dumb description"},
+          {id:2, status:false, description:"For some other stuff"},
+          {id:3, status:false, description:"Colors here"},
+          {id:4, status:false, description:"Read about this"},
+          {id:5, status:false, description:"Range pickers pdf"}
+        ],
+        notes:[
+          {id:1, author:"Ivan Vulovic", description:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus aut doloribus eligendi iure magni maxime mollitia nisi. Earum excepturi iusto nostrum reiciendis saepe tempora vitae voluptates. Debitis, dicta, vitae! Aperiam cumque eos esse nisi, obcaecati quisquam! Aliquam aperiam architecto dignissimos eligendi facilis, iure laborum magni neque nihil porro repellendus repudiandae soluta, ut. Ab aspernatur assumenda atque consequatur consequuntur corporis cum earum eos error esse ex expedita fugiat hic ipsam ipsum iure magnam maxime mollitia nemo nesciunt obcaecati odio officia quas quasi quidem quo quod reiciendis repellat sapiente sequi sint, vero voluptate voluptatum. Animi aspernatur autem cumque debitis, dignissimos eius esse eveniet maiores, minima minus possimus quibusdam ratione suscipit, ut vitae! Alias asperiores consectetur facilis natus perspiciatis quas sit voluptatibus? Animi architecto aut, consequatur corporis deserunt fuga itaque iusto libero, maxime, necessitatibus non possimus repellendus rerum totam voluptatibus! Alias aliquid blanditiis consectetur consequuntur delectus ea incidunt quam reprehenderit repudiandae vel! A accusamus corporis culpa cupiditate delectus deserunt distinctio incidunt iure libero magni non officiis, reiciendis ut. Alias aliquam amet, atque cupiditate delectus dicta doloremque earum incidunt inventore ipsum molestiae nam nobis numquam porro sapiente tenetur vel, voluptatum. Doloremque exercitationem incidunt non provident vero? Ad aliquam cumque, cupiditate eveniet numquam optio recusandae."},
+          {id:2, author:"Marko Markovic", description:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo nihil porro veritatis? Accusantium iste quisquam ratione tenetur vero? Ab amet aut consectetur, deleniti earum eos in ipsam libero, necessitatibus nesciunt officia porro quisquam, ratione sequi similique sit suscipit temporibus unde. Aspernatur commodi consequuntur doloribus excepturi facere fugit hic nulla possimus tempore veniam. Aliquam animi ipsam labore quia quibusdam rem vero! Assumenda libero nulla obcaecati quaerat quisquam tempore ullam. Ab at consequuntur culpa cumque exercitationem harum, hic, illo impedit ipsa laboriosam maiores omnis quaerat ratione, rem repellendus reprehenderit sit temporibus. Deserunt eius eum fuga illum porro quos repellendus sit suscipit unde."},
+          {id:3, author:"Milos Ljubisavljevic", description:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi eum eveniet fuga inventore sapiente sunt. Alias aliquid asperiores autem beatae cupiditate distinctio doloremque ea et id illum in, ipsa iste iusto magnam nesciunt non odit optio pariatur placeat, porro quasi quia quo reiciendis, reprehenderit sint soluta sunt. Ex in, molestiae!"},
+          {id:4, author:"Mika Peric", description:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus aut doloribus eligendi iure magni maxime mollitia nisi. Earum excepturi iusto nostrum reiciendis saepe tempora vitae voluptates. Debitis, dicta, vitae! Aperiam cumque eos esse nisi, obcaecati quisquam! Aliquam aperiam architecto dignissimos eligendi facilis, iure laborum magni neque nihil porro repellendus repudiandae soluta, ut. Ab aspernatur assumenda atque consequatur consequuntur corporis cum earum eos error esse ex expedita fugiat hic ipsam ipsum iure magnam maxime mollitia nemo nesciunt obcaecati odio officia quas quasi quidem quo quod reiciendis repellat sapiente sequi sint, vero voluptate voluptatum. Animi aspernatur autem cumque debitis, dignissimos eius esse eveniet maiores, minima minus possimus quibusdam ratione suscipit, ut vitae! Alias asperiores consectetur facilis natus perspiciatis quas sit voluptatibus? Animi architecto aut, consequatur corporis deserunt fuga itaque iusto libero, maxime, necessitatibus non possimus repellendus rerum totam voluptatibus! Alias aliquid blanditiis consectetur consequuntur delectus ea incidunt quam reprehenderit repudiandae vel! A accusamus corporis culpa cupiditate delectus deserunt distinctio incidunt iure libero magni non officiis, reiciendis ut. Alias aliquam amet, atque cupiditate delectus dicta doloremque earum incidunt inventore ipsum molestiae nam nobis numquam porro sapiente tenetur vel, voluptatum. Doloremque exercitationem incidunt non provident vero? Ad aliquam cumque, cupiditate eveniet numquam optio recusandae."},
+          {id:5, author:"Ivan Vulovic", description:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga laudantium neque odio soluta. A ab, aliquam asperiores assumenda doloribus dolorum ducimus eligendi enim et eveniet expedita facilis laudantium magni molestias numquam obcaecati odit possimus quasi quisquam repellendus, sed tempora velit. Atque corporis, illum itaque iusto labore laborum necessitatibus perspiciatis quam?"}
+        ],
+        files:[
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", fileName:'some_useful_file.pdf',description:"This is some dumb description"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", fileName:'stuff_is_good.pdf',description:"For some other stuff"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", fileName:'colors.pdf',description:"Colors here"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", fileName:'some_useful_read_file.pdf',description:"Read about this"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", fileName:'range_pickers.pdf',description:"Range pickers pdf"}
+        ],
+        links: [
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
+          {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
+        ]
       }
+    };
+  }
+
+  changeTab (event, value) {
+    this.setState({...this.state, activeTab: value });
+  };
+
+  updateTaskStatus(id){
+    this.setState({
+      ...this.state,
+      project:{
+        ...this.state.project,
+        tasks: this.state.project.tasks.map(task => task.id === id ? {...task, status: !task.status} : task)
+      }
+    });
+  }
+
+  createTask(task){
+    this.setState({
+      ...this.state,
+      project:{
+        ...this.state.project,
+        tasks:[
+          ...this.state.project.tasks,
+          {id: Math.floor(Math.random()*10000), status: false, description:task}
+        ]
+      }
+    });
+  }
+
+  createNote(obj){
+    this.setState({
+      ...this.state,
+      project:{
+        ...this.state.project,
+        notes:[
+          ...this.state.project.notes,
+          {id: Math.floor(Math.random()*10000), ...obj}
+        ]
+      }
+    });
+  }
+
+  updateTaskDescription(id, description){
+    this.setState({
+      ...this.state,
+      project:{
+        ...this.state.project,
+        tasks: this.state.project.tasks.map(task => task.id === id ? {...task, description: description} : task)
+      }
+    });
+  }
+
+  updateNoteDescription(id, description){
+    this.setState({
+      ...this.state,
+      project:{
+        ...this.state.project,
+        notes: this.state.project.notes.map(obj => obj.id === id ? {...obj, description: description} : obj)
+      }
+    });
+  }
+
+  removeTask(id){
+    if(id){
+      this.setState({
+        ...this.state,
+        project:{
+          ...this.state.project,
+          tasks: this.state.project.tasks.filter(task => task.id !==id)
+        }
+      });
     }
-    this.closeEditDialog(event);
   }
 
-  openRemoveDialog (event) {
-    this.preventClose(event);
-    this.setState({ removeDialogOpened: true });
-  };
-  closeRemoveDialog (event) {
-    this.preventClose(event);
-    this.setState({ removeDialogOpened: false });
-  };
-  confirmProjectRemoval(event){
-    this.props.onProjectRemoval(this.props.id);
-    this.closeRemoveDialog(event);
+  removeNote(id){
+    if(id){
+      this.setState({
+        ...this.state,
+        project:{
+          ...this.state.project,
+          notes: this.state.project.notes.filter(obj => obj.id !==id)
+        }
+      });
+    }
   }
 
-  openPinDialog (event) {
-    this.preventClose(event);
-    this.setState({ pinDialogOpened: true });
-  };
-  closePinDialog (event) {
-    this.preventClose(event);
-    this.setState({ pinDialogOpened: false });
-  };
-  confirmProjectPin(event){
-    this.props.onProjectPin(this.props.id);
-    this.closePinDialog(event);
-  }
 
   render(){
-    const options = themes;
-    const ITEM_HEIGHT = 48;
-    return (
-      <NavLink  to={"/projects/"+this.props.id}>
-        <div className={"color-box relative "+this.props.theme}>
-          <p className="color-box-counter">{this.props.count}%</p>
-          <p className="color-box-title">{this.props.title}</p>
-          <div className="color-box-settings">
-            <div>
-              <Button onClick={this.openPinDialog} className="color-white no-padding">
-                <span className="color-box-settings-icon"> {this.props.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />} </span>
-              </Button>
-              <Button onClick={this.openThemePicker} className="color-white no-padding">
-                <span className="color-box-settings-icon"> <MdPalette/> </span>
-              </Button>
-              <Button onClick={this.openEditDialog} className="color-white no-padding">
-                <span className="color-box-settings-icon"> <FaPaintRoller size={26}/> </span>
-              </Button>
-              <Button onClick={this.openRemoveDialog} className="color-white no-padding">
-                <span className="color-box-settings-icon"> <GoFlame size={28} /> </span>
-              </Button>
-
-              <Dialog open={this.state.pinDialogOpened} onClose={this.closePinDialog} onClick={this.preventClose}>
-                <DialogTitle id="alert-dialog-title">{this.props.pinned ? 'Unpin ':'Pin '} Project</DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    This means that your project <strong className="color-gray">{this.props.title}</strong> {this.props.pinned ? 'will not be shown anymore' : 'will appear above all other projects'} in pinned section.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.closePinDialog} color="primary" autoFocus> Cancel </Button>
-                  <Button onClick={this.confirmProjectPin} color="primary"> Confirm </Button>
-                </DialogActions>
-              </Dialog>
-
-              <Menu anchorEl={this.state.themePickerAnchor} open={Boolean(this.state.themePickerAnchor)} onClose={this.closeThemePicker} PaperProps={{style: {maxHeight: ITEM_HEIGHT * 4.5, width: 200}}}>
-                {options.map((option, j) => (
-                  <MenuItem key={j} selected={option.id === this.props.theme} className="color-gray" onClick={(event)=>this.handleThemeChange(event, option.id, this.props.id)}>
-                    <span className={'theme-preview '+option.id}> </span> {option.name}
-                  </MenuItem>
-                ))}
-              </Menu>
-
-              <Dialog open={this.state.editDialogOpened} onClose={this.closeEditDialog} onClick={this.preventClose}>
-                <DialogTitle id="form-dialog-title">Update Project Name</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    You are about to change project name of <strong className="color-gray"> {this.props.title} </strong> with the new one:
-                  </DialogContentText>
-                  <TextField autoFocus autoComplete="off" id="name" label="Project name" type="text" defaultValue={this.props.title} fullWidth inputRef={this.editedProjectName}/>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.closeEditDialog} color="primary"> Cancel </Button>
-                  <Button onClick={this.confirmEditingProject} color="primary"> Save </Button>
-                </DialogActions>
-              </Dialog>
-
-              <Dialog open={this.state.removeDialogOpened} onClose={this.closeRemoveDialog} onClick={this.preventClose}>
-                <DialogTitle id="alert-dialog-title">Confirm Project Removal</DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    This means that your project <strong className="color-gray">{this.props.title}</strong> and its items will be removed forever.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.closeRemoveDialog} color="primary"> Cancel </Button>
-                  <Button onClick={this.confirmProjectRemoval} color="primary" autoFocus> Confirm </Button>
-                </DialogActions>
-              </Dialog>
+    const activeTasks = this.state.project.tasks.filter(task => !task.status);
+    const completedTasks = this.state.project.tasks.filter(task => task.status);
+    const {notes} = this.state.project;
+    return(
+      <div className="overflow-auto">
+        <AppBar position="static" color="default" className="margin-top ">
+          <Toolbar>
+            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 no-padding">
+              <p className="project-title color-gray"> {this.state.project.project} </p>
             </div>
-          </div>
-        </div>
-      </NavLink>
+          </Toolbar>
+
+          <Toolbar>
+            <div>
+              <p className="small-line-spacing color-gray bottom-space">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. A atque distinctio dolor dolore eaque facilis, itaque iure iusto nemo porro provident quis quod repudiandae sapiente tempora vel voluptas! Ad architecto atque blanditiis consequatur cumque dolores dolorum error eveniet facilis, fuga hic ipsum neque nihil reiciendis sed soluta suscipit vel voluptas.
+              </p>
+            </div>
+          </Toolbar>
+        </AppBar>
+
+        <AppBar position="static" color="default">
+          <Tabs value={this.state.activeTab} onChange={this.changeTab} scrollButtons="on" variant="fullWidth" indicatorColor="primary" textColor="primary">
+            <Tab label="Tasks" icon={<GoTasklist size={20}/>} />
+            <Tab label="Notes" icon={<GoNote size={20}/>} />
+            <Tab label="Files" icon={<FaRegFile size={20}/>} />
+            <Tab label="Links" icon={<GoLinkExternal size={22}/>} />
+          </Tabs>
+        </AppBar>
+
+        {this.state.activeTab === 0 && (
+          <TabContainer>
+            <CreateTask onTaskCreation={this.createTask}/>
+            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 no-padding">
+              <TaskList tasks={activeTasks} onTaskDescriptionUpdate={this.updateTaskDescription} onTaskRemoval={this.removeTask} onTaskStatusUpdate={this.updateTaskStatus}/>
+              {!Boolean(activeTasks.length) && <p className="text-muted">We couldn't find any task.</p>}
+            </div>
+            <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 no-padding">
+              <TaskList tasks={completedTasks} onTaskDescriptionUpdate={this.updateTaskDescription} onTaskRemoval={this.removeTask} onTaskStatusUpdate={this.updateTaskStatus}/>
+              {!Boolean(completedTasks.length) && <p className="text-muted">No completed tasks found.</p>}
+            </div>
+          </TabContainer>)}
+
+        {this.state.activeTab === 1 && (
+          <TabContainer>
+            <CreateNote onNoteCreation={this.createNote}/>
+            <NoteList notes={notes} onNoteDescriptionUpdate={this.updateNoteDescription} onNoteRemoval={this.removeNote}/>
+          </TabContainer>)}
+
+        {this.state.activeTab === 2 && (
+          <TabContainer>
+            <ul className="project-items-list">
+              {this.state.project.files.map((project, i) => <ProjectFileItem key={i} description={project.description} link={project.link } fileName={project.fileName} /> )}
+            </ul>
+        </TabContainer>)}
+
+        {this.state.activeTab === 3 && (
+          <TabContainer>
+            <ul className="project-items-list">
+              {this.state.project.links.map((project, i) => <ProjectLinkItem key={i} description={project.description} link={project.link } /> )}
+            </ul>
+        </TabContainer>)}
+      </div>
     )
   }
 }
+

@@ -13,7 +13,7 @@ import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Projects from "./containers/Projects";
-import ProjectInfo from "./containers/ProjectInfo";
+import Project from "./containers/Project";
 import {MdChevronRight} from "react-icons/md";
 import {FaGhost} from "react-icons/fa";
 
@@ -78,7 +78,7 @@ class App extends Component {
             <Route path="/login" component={Login}/>
             <Route path="/register" component={Register}/>
             <Route path="/projects" component={Projects} exact/>
-            <Route path="/projects/:id" component={ProjectInfo}/>
+            <Route path="/projects/:id" component={Project}/>
             <Route component={NotFound} />
           </Switch>
         </div>

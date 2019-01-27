@@ -1,6 +1,6 @@
 import React from "react";
 import {Component} from "react";
-import {Project} from "./Project";
+import {ProjectThumbnail} from "./ProjectThumbnail";
 import {GoSearch} from "react-icons/go";
 import Divider from "@material-ui/core/es/Divider/Divider";
 import {TextField} from "@material-ui/core";
@@ -145,7 +145,7 @@ export default class Projects extends Component{
         this.projectName.current.value = '';
         this.closeCreateProjectDialog();
       } else {
-        this.handlSnackbarOpening('top', 'center', 'Project with such name already exists.')
+        this.handlSnackbarOpening('top', 'center', 'ProjectThumbnail with such name already exists.')
       }
     } else {
       this.handlSnackbarOpening('top', 'center', 'Please provide a valid name.')
@@ -236,7 +236,7 @@ export default class Projects extends Component{
           </div>
         )}
 
-        {pinned.map((project,i) => <Project key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/>)}
+        {pinned.map((project,i) => <ProjectThumbnail key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/>)}
 
         {Boolean(pinned.length) && (
           <div className="bottom-space">
@@ -249,7 +249,7 @@ export default class Projects extends Component{
           <p className="color-gray medium-line-spacing medium-text">Projects</p>
         </div>
 
-        {projects.map((project,i) => <Project onProjectInfoView={()=>this.openProjectInfoDialog(project)} key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/> )}
+        {projects.map((project,i) => <ProjectThumbnail onProjectInfoView={()=>this.openProjectInfoDialog(project)} key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/> )}
         {!Boolean(projects.length) && (
           <div className="bottom-space">
             {/*<p className="color-gray medium-line-spacing">No projects found.</p>*/}
