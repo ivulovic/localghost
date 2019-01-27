@@ -7,8 +7,8 @@ export const NoteList = (props) =>(
                                         id={note.id}
                                         author={note.author}
                                         description={note.description}
-                                        onNoteDescriptionUpdate={props.onNoteDescriptionUpdate} 
-                                        onNoteRemoval={props.onNoteRemoval}  />)}
+                                        onUpdate={props.onUpdate}
+                                        onRemove={props.onRemove}/>)}
     {!Boolean(props.notes.length) && <li className="text-muted">We couldn't find any note.</li>}
   </ul>
 );

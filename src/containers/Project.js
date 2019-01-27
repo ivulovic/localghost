@@ -6,13 +6,12 @@ import Typography from "@material-ui/core/es/Typography/Typography";
 import AppBar from "@material-ui/core/es/AppBar/AppBar";
 import Tabs from "@material-ui/core/es/Tabs/Tabs";
 import Tab from "@material-ui/core/es/Tab/Tab";
-import {GoLinkExternal, GoNote, GoSearch, GoTasklist} from "react-icons/go";
+import {GoLinkExternal, GoNote, GoTasklist} from "react-icons/go";
 import {ProjectFileItem} from "../components/ProjectFileItem";
 import Toolbar from "@material-ui/core/es/Toolbar/Toolbar";
-import {CreateTask} from "../components/project/tasks/CreateTask";
 import {TaskList} from "../components/project/tasks/TaskList";
 import {NoteList} from "../components/project/notes/NoteList";
-import {CreateNote} from "../components/project/notes/CreateNote";
+import {CreateDescription} from "../components/project/common/CreateDescription";
 
 const TabContainer = (props) => {
   return (
@@ -27,13 +26,10 @@ export default class Project extends Component{
   constructor(props){
     super(props);
     this.changeTab = this.changeTab.bind(this);
-    this.createTask = this.createTask.bind(this);
-    this.removeTask = this.removeTask.bind(this);
-    this.updateTaskDescription = this.updateTaskDescription.bind(this);
-    this.updateTaskStatus = this.updateTaskStatus.bind(this);
-    this.createNote = this.createNote.bind(this);
-    this.removeNote = this.removeNote.bind(this);
-    this.updateNoteDescription = this.updateNoteDescription.bind(this);
+
+    this.update = this.update.bind(this);
+    this.remove = this.remove.bind(this);
+    this.create = this.create.bind(this);
 
     this.state = {
       activeTab:0,
@@ -75,86 +71,40 @@ export default class Project extends Component{
     this.setState({...this.state, activeTab: value });
   };
 
-  updateTaskStatus(id){
+  update(key, obj){
     this.setState({
       ...this.state,
       project:{
         ...this.state.project,
-        tasks: this.state.project.tasks.map(task => task.id === id ? {...task, status: !task.status} : task)
+        [key]: this.state.project[key].map(item => item.id === obj.id ? {...item, ...obj} : item)
       }
     });
   }
 
-  createTask(task){
+  create(key, obj){
     this.setState({
       ...this.state,
       project:{
         ...this.state.project,
-        tasks:[
-          ...this.state.project.tasks,
-          {id: Math.floor(Math.random()*10000), status: false, description:task}
-        ]
-      }
-    });
-  }
-
-  createNote(obj){
-    this.setState({
-      ...this.state,
-      project:{
-        ...this.state.project,
-        notes:[
-          ...this.state.project.notes,
+        [key]:[
+          ...this.state.project[key],
           {id: Math.floor(Math.random()*10000), ...obj}
         ]
       }
     });
   }
 
-  updateTaskDescription(id, description){
-    this.setState({
-      ...this.state,
-      project:{
-        ...this.state.project,
-        tasks: this.state.project.tasks.map(task => task.id === id ? {...task, description: description} : task)
-      }
-    });
-  }
-
-  updateNoteDescription(id, description){
-    this.setState({
-      ...this.state,
-      project:{
-        ...this.state.project,
-        notes: this.state.project.notes.map(obj => obj.id === id ? {...obj, description: description} : obj)
-      }
-    });
-  }
-
-  removeTask(id){
-    if(id){
+  remove(key, obj){
+    if(obj && obj.id){
       this.setState({
         ...this.state,
         project:{
           ...this.state.project,
-          tasks: this.state.project.tasks.filter(task => task.id !==id)
+          [key]: this.state.project[key].filter(item => item.id !== obj.id)
         }
       });
     }
   }
-
-  removeNote(id){
-    if(id){
-      this.setState({
-        ...this.state,
-        project:{
-          ...this.state.project,
-          notes: this.state.project.notes.filter(obj => obj.id !==id)
-        }
-      });
-    }
-  }
-
 
   render(){
     const activeTasks = this.state.project.tasks.filter(task => !task.status);
@@ -168,7 +118,6 @@ export default class Project extends Component{
               <p className="project-title color-gray"> {this.state.project.project} </p>
             </div>
           </Toolbar>
-
           <Toolbar>
             <div>
               <p className="small-line-spacing color-gray bottom-space">
@@ -189,21 +138,21 @@ export default class Project extends Component{
 
         {this.state.activeTab === 0 && (
           <TabContainer>
-            <CreateTask onTaskCreation={this.createTask}/>
+            <CreateDescription topic="task" onCreate={this.create}/>
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 no-padding">
-              <TaskList tasks={activeTasks} onTaskDescriptionUpdate={this.updateTaskDescription} onTaskRemoval={this.removeTask} onTaskStatusUpdate={this.updateTaskStatus}/>
+              <TaskList tasks={activeTasks} onUpdate={this.update} onRemove={this.remove}/>
               {!Boolean(activeTasks.length) && <p className="text-muted">We couldn't find any task.</p>}
             </div>
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 no-padding">
-              <TaskList tasks={completedTasks} onTaskDescriptionUpdate={this.updateTaskDescription} onTaskRemoval={this.removeTask} onTaskStatusUpdate={this.updateTaskStatus}/>
+              <TaskList tasks={completedTasks} onUpdate={this.update} onRemove={this.remove}/>
               {!Boolean(completedTasks.length) && <p className="text-muted">No completed tasks found.</p>}
             </div>
           </TabContainer>)}
 
         {this.state.activeTab === 1 && (
           <TabContainer>
-            <CreateNote onNoteCreation={this.createNote}/>
-            <NoteList notes={notes} onNoteDescriptionUpdate={this.updateNoteDescription} onNoteRemoval={this.removeNote}/>
+            <CreateDescription topic="note" onCreate={this.create}/>
+            <NoteList notes={notes} onUpdate={this.update} onRemove={this.remove}/>
           </TabContainer>)}
 
         {this.state.activeTab === 2 && (

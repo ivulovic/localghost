@@ -1,10 +1,12 @@
 import React from "react";
-import {UpdateDeleteControls} from "../controls/UpdateDeleteControls";
+import {RemoveControl} from "../shared/RemoveControl";
+import {UpdateDescription} from "../common/UpdateDescription";
 
 export const Note = (props) => (
   <li className="bottom-space">
     <p className="label">{props.author}</p>
     <p className="color-gray">{props.description}</p>
-    <UpdateDeleteControls topic="note" mode="default" id={props.id} description={props.description} onRemove={props.onNoteRemoval} onUpdate={props.onNoteDescriptionUpdate}/>
+    <RemoveControl mode="default" topic="note" id={props.id} onRemove={props.onRemove}/>
+    <UpdateDescription topic="note" mode="default" id={props.id} description={props.description} onUpdate={props.onUpdate}/>
   </li>
 );
