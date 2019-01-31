@@ -2,13 +2,16 @@ import React from "react";
 import {Note} from "./Note";
 
 export const NoteList = (props) =>(
-  <ul className="project-items-list">
-    {props.notes.map((note, i) => <Note key={i} 
+  <div>
+    {props.notes.map((note, i) => <Note key={note.id}
                                         id={note.id}
-                                        author={note.author}
+                                        title={note.title}
                                         description={note.description}
+                                        author={note.author}
+                                        taskId={props.taskId}
+                                        onCreate={props.onCreate}
                                         onUpdate={props.onUpdate}
                                         onRemove={props.onRemove}/>)}
-    {!Boolean(props.notes.length) && <li className="text-muted">We couldn't find any note.</li>}
-  </ul>
+    {!Boolean(props.notes.length) && <p className="text-muted small-margin-top small-bottom-space">We couldn't find any note.</p>}
+  </div>
 );

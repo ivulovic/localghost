@@ -1,11 +1,12 @@
 import React from "react";
-import {FiTrash} from "react-icons/fi";
 import Button from "@material-ui/core/es/Button/Button";
 import Dialog from "@material-ui/core/es/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogContentText from "@material-ui/core/es/DialogContentText/DialogContentText";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
+import {MdDelete} from "react-icons/md";
+import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 
 export class RemoveControl extends React.Component{
 
@@ -25,7 +26,7 @@ export class RemoveControl extends React.Component{
     this.setState({ removeDialogOpened: false });
   };
   confirmRemoval(event){
-    this.props.onRemove(this.props.topic+"s", {id:this.props.id});
+    this.props.onRemove(this.props.topic+"s", {id:this.props.id}, this.props.taskId, this.props.id);
     this.closeRemoveDialog();
   }
   render(){
@@ -34,13 +35,15 @@ export class RemoveControl extends React.Component{
 
         {this.props.mode==='icon' && (
           <div className="inline-block minimum-space-after">
-            <Button variant="outlined" className="icon-only-button no-radius" onClick={this.openRemoveDialog}><FiTrash/> </Button>
+            <Tooltip title="Remove">
+              <Button variant="outlined" className="icon-only-button no-radius" onClick={this.openRemoveDialog}><MdDelete size={20}/> </Button>
+            </Tooltip>
           </div>
         )}
 
         {this.props.mode==='default' && (
-          <div className="inline-block small-margin-top">
-            <Button variant="outlined" className="small-space-after no-radius color-gray" onClick={this.openRemoveDialog}><FiTrash/> &nbsp; Remove</Button>
+          <div className="inline-block small-margin-top minimum-space-after">
+            <Button variant="outlined" className="small-space-after no-radius color-gray" onClick={this.openRemoveDialog}><MdDelete size={20}/> &nbsp; Remove</Button>
           </div>
         )}
 
