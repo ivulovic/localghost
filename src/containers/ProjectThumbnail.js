@@ -4,8 +4,6 @@ import {MdDelete, MdEdit, MdPalette} from "react-icons/md";
 import Button from "@material-ui/core/es/Button/Button";
 import Menu from "@material-ui/core/es/Menu/Menu";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
-import {FaPaintRoller} from "react-icons/fa";
-import {GoFlame} from "react-icons/go";
 import Dialog from "@material-ui/core/es/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
@@ -25,47 +23,41 @@ export class ProjectThumbnail extends React.Component{
       removeDialogOpened:false,
       pinDialogOpened:false
     };
-    this.openThemePicker = this.openThemePicker.bind(this);
-    this.closeThemePicker = this.closeThemePicker.bind(this);
-    this.openEditDialog = this.openEditDialog.bind(this);
-    this.closeEditDialog = this.closeEditDialog.bind(this);
-    this.confirmEditingProject = this.confirmEditingProject.bind(this);
-    this.preventClose = this.preventClose.bind(this);
-    this.openRemoveDialog = this.openRemoveDialog.bind(this);
-    this.closeRemoveDialog = this.closeRemoveDialog.bind(this);
-    this.confirmProjectRemoval = this.confirmProjectRemoval.bind(this);
-    this.openPinDialog = this.openPinDialog.bind(this);
-    this.closePinDialog = this.closePinDialog.bind(this);
-    this.confirmProjectPin = this.confirmProjectPin.bind(this);
     this.editedProjectName = React.createRef();
    }
-  preventClose(event){
+
+  preventClose = (event) => {
     event.stopPropagation();
     event.preventDefault();
-  }
-  openThemePicker(event){
+  };
+
+  openThemePicker = (event) => {
     this.preventClose(event);
     this.setState({ themePickerAnchor: event.currentTarget });
   };
-  closeThemePicker(event){
+
+  closeThemePicker = (event) => {
     this.preventClose(event);
     this.setState({ themePickerAnchor: null });
-  }
-  handleThemeChange(event, theme, id){
+  };
+
+  handleThemeChange = (event, theme, id) => {
     this.preventClose(event);
     this.setState({ themePickerAnchor: null });
     this.props.onThemeChange(id, theme);
   };
 
-  openEditDialog (event) {
+  openEditDialog = (event) => {
     this.preventClose(event);
     this.setState({ editDialogOpened: true });
   };
-  closeEditDialog (event) {
+
+  closeEditDialog = (event) => {
     this.preventClose(event);
     this.setState({ editDialogOpened: false });
   };
-  confirmEditingProject(event){
+
+  confirmEditingProject = (event) => {
     let newProjectName = this.editedProjectName.current.value;
     if(newProjectName && newProjectName.trim()){
       if(newProjectName.trim() !== this.props.title){
@@ -73,33 +65,37 @@ export class ProjectThumbnail extends React.Component{
       }
     }
     this.closeEditDialog(event);
-  }
+  };
 
-  openRemoveDialog (event) {
+  openRemoveDialog = (event) => {
     this.preventClose(event);
     this.setState({ removeDialogOpened: true });
   };
-  closeRemoveDialog (event) {
+
+  closeRemoveDialog = (event) => {
     this.preventClose(event);
     this.setState({ removeDialogOpened: false });
   };
-  confirmProjectRemoval(event){
+
+  confirmProjectRemoval = (event) => {
     this.props.onProjectRemoval(this.props.id);
     this.closeRemoveDialog(event);
-  }
+  };
 
-  openPinDialog (event) {
+  openPinDialog = (event) => {
     this.preventClose(event);
     this.setState({ pinDialogOpened: true });
   };
-  closePinDialog (event) {
+
+  closePinDialog = (event) => {
     this.preventClose(event);
     this.setState({ pinDialogOpened: false });
   };
-  confirmProjectPin(event){
+
+  confirmProjectPin = (event) => {
     this.props.onProjectPin(this.props.id);
     this.closePinDialog(event);
-  }
+  };
 
   render(){
     const options = themes;

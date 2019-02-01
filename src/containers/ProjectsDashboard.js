@@ -1,8 +1,7 @@
 import React from "react";
 import {Component} from "react";
 import {ProjectThumbnail} from "./ProjectThumbnail";
-import {GoFlame, GoSearch} from "react-icons/go";
-import Divider from "@material-ui/core/es/Divider/Divider";
+import {GoSearch} from "react-icons/go";
 import {TextField} from "@material-ui/core";
 import InputAdornment from "@material-ui/core/es/InputAdornment/InputAdornment";
 import Snackbar from "@material-ui/core/es/Snackbar/Snackbar";
@@ -14,10 +13,8 @@ import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 import Menu from "@material-ui/core/es/Menu/Menu";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
 import themes from "../utils/themes";
-import {TiPin, TiPinOutline} from "react-icons/ti";
-import {MdDelete, MdEdit, MdPalette} from "react-icons/md";
-import {FaEdit, FaPaintRoller} from "react-icons/fa";
-import {NavLink} from "react-router-dom";
+import ProjectService from "../services/project.service";
+import {Spinner} from "../components/Spinner";
 
 export default class ProjectsDashboard extends Component{
   constructor(props) {
@@ -31,44 +28,20 @@ export default class ProjectsDashboard extends Component{
       snackbarMessage:'',
       themePickerAnchor:null,
       selectedTheme:"reflex-silver",
-      projects: [
-        {id:1, theme:"reflex-silver", title:"Maximillian Swartzmuller", count:"41", pinned:false,
-          items: [
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
-          ]},
-        {id:2, theme:"ocean-blue", title:"Angular Deploy", count:"12", pinned: false,
-          items: [
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"This is some dumb description"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Bottom Navigation"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Colors"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"ES-Lint"},
-            {path:"#", link:"http://somedubmshit.com/tasks?queryParams=jajaj", description:"Range"}
-          ]}
-      ],
+      loading: true,
+      projects: []
     };
-    this.handleThemeChange = this.handleThemeChange.bind(this);
-    this.handleProjectNameChange = this.handleProjectNameChange.bind(this);
-    this.handleProjectRemoval = this.handleProjectRemoval.bind(this);
-    this.handleProjectPin = this.handleProjectPin.bind(this);
-    this.openCreateProjectDialog = this.openCreateProjectDialog.bind(this);
-    this.closeCreateProjectDialog = this.closeCreateProjectDialog.bind(this);
-    this.confirmProjectCreation = this.confirmProjectCreation.bind(this);
-    this.handlSnackbarOpening = this.handlSnackbarOpening.bind(this);
-    this.handleSnackbarClosing = this.handleSnackbarClosing.bind(this);
-    this.filterProjects = this.filterProjects.bind(this);
-
-    this.openThemePicker = this.openThemePicker.bind(this);
-    this.closeThemePicker = this.closeThemePicker.bind(this);
-    this.selectTheme = this.selectTheme.bind(this);
     this.projectName = React.createRef();
     this.filterValue = React.createRef();
   }
 
-  handlSnackbarOpening (vertical, horizontal, message) {
+  componentDidMount() {
+    ProjectService.getProjects()
+      .then((projects) => this.setState({loading: false, projects}))
+      .catch((error) => this.setState({loading: false}))
+  }
+
+  handlSnackbarOpening = (vertical, horizontal, message) => {
     this.setState({
       ...this.state,
         snackbarOpened: true,
@@ -84,35 +57,39 @@ export default class ProjectsDashboard extends Component{
     }, 2000)
   };
 
-  handleSnackbarClosing(){
+  handleSnackbarClosing = () => {
     this.setState({ snackbarOpened: false });
   };
 
-  handleThemeChange(projectId, theme){
+  handleThemeChange = (projectId, theme) => {
     this.setState({
       projects:  this.state.projects.map(project=> project.id === projectId ? {...project, theme} : project)
     })
   }
 
-  handleProjectNameChange(projectId, projectName){
+  handleProjectNameChange = (projectId, projectName) => {
     this.setState({
       projects: this.state.projects.map(project=> project.id === projectId ? {...project, title:projectName} : project)
     })
   }
 
-  handleProjectRemoval(projectId){
+  handleProjectRemoval = (projectId)=>{
     this.setState({
       projects: this.state.projects.filter(project=> project.id !== projectId)
     })
   }
-  handleProjectPin(projectId){
+  handleProjectPin=(projectId)=>{
     this.setState({
       projects: this.state.projects.map(project=> project.id === projectId ? {...project, pinned:!project.pinned} : project)
     })
   }
 
 
-  filterProjects(event){
+  preventDefaultBehaviour = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  filterProjects = (event)=>{
     event.preventDefault();
     let filterValue = event.target.value;
     if(filterValue && filterValue.trim()){
@@ -128,16 +105,16 @@ export default class ProjectsDashboard extends Component{
     }
   }
 
-  openCreateProjectDialog () {
+  openCreateProjectDialog = () => {
      this.setState({ createProjectOpened: true });
   };
-  closeCreateProjectDialog () {
+  closeCreateProjectDialog = () => {
      this.setState({ createProjectOpened: false, selectedTheme:'reflex-silver' });
   };
-  confirmProjectCreation(event){
+  confirmProjectCreation = (event) => {
     event.preventDefault();
     if(this.projectName.current.value && this.projectName.current.value.trim()){
-      let projectExists = this.state.projects.filter(project => project.title.trim().toLowerCase() === this.projectName.current.value.trim().toLowerCase());
+      let projectExists = this.state.projects.filter(project => project.name.trim().toLowerCase() === this.projectName.current.value.trim().toLowerCase());
       if(!projectExists.length){
         let newProject =  {id:Math.floor(Math.random()*10000), theme:this.state.selectedTheme, title:this.projectName.current.value.trim(), count:"0", pinned: false};
         this.setState({
@@ -156,13 +133,13 @@ export default class ProjectsDashboard extends Component{
     }
   }
 
-  openThemePicker(event){
+  openThemePicker = (event) => {
      this.setState({ themePickerAnchor: event.currentTarget });
   };
-  closeThemePicker(event){
+  closeThemePicker = (event) => {
      this.setState({ themePickerAnchor: null });
   }
-  selectTheme(event, selectedTheme){
+  selectTheme = (event, selectedTheme) => {
     this.setState({
       selectedTheme,
       themePickerAnchor:null
@@ -171,7 +148,7 @@ export default class ProjectsDashboard extends Component{
 
   render(){
     const pinned = this.state.projects.filter((project,i) => project.pinned);
-    const projects = (this.state.projects && this.state.projects.length) ? this.state.projects.filter(project => project.title.trim().toLowerCase().indexOf(this.state.filterValue)>=0) : [];
+    const projects = (this.state.projects && this.state.projects.length) ? this.state.projects.filter(project => project.name.trim().toLowerCase().indexOf(this.state.filterValue)>=0) : [];
     return(
       <div className="overflow-auto projects">
 
@@ -193,7 +170,7 @@ export default class ProjectsDashboard extends Component{
             Create Project
           </Button>
 
-          <form onSubmit={this.filterProjects} className="search-project-form">
+          <form onSubmit={this.preventDefaultBehaviour} className="search-project-form">
               <TextField type="text" autoComplete="off" id="searchProject" label=""
                          fullWidth
                          onKeyUp={this.filterProjects}
@@ -213,9 +190,9 @@ export default class ProjectsDashboard extends Component{
           <DialogTitle id="form-dialog-title">Create Project</DialogTitle>
           <DialogContent>
             <TextField autoFocus autoComplete="off" id="projectName" label="Project name" type="text" defaultValue={this.props.title} fullWidth inputRef={this.projectName}/>
-            <div className="bottom-space"></div>
+            <div className="bottom-space"/>
             <TextField autoComplete="off" id="details" label="Details" type="text" defaultValue={this.props.title} fullWidth inputRef={this.details} multiline rows="4"/>
-            <div className="bottom-space"></div>
+            <div className="bottom-space"/>
             <p className="label">Theme</p>
             <div className={"theme-preview-big pointer "+this.state.selectedTheme} onClick={this.openThemePicker}> </div>
             <Menu anchorEl={this.state.themePickerAnchor} open={Boolean(this.state.themePickerAnchor)} onClose={this.closeThemePicker} PaperProps={{style: {maxHeight: 48 * 4.5, width: 200}}}>
@@ -236,7 +213,7 @@ export default class ProjectsDashboard extends Component{
           <p className="color-gray medium-line-spacing medium-text">Projects</p>
         </div>
 
-        <div className="clear"></div>
+        <div className="clear"/>
 
         {Boolean(pinned.length) && (
           <div className="bottom-space">
@@ -244,28 +221,27 @@ export default class ProjectsDashboard extends Component{
           </div>
         )}
 
-        {pinned.map((project,i) => <ProjectThumbnail key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/>)}
-
-        {/*{Boolean(pinned.length) && (*/}
-          {/*<div className="bottom-space">*/}
-            {/*<div className="bottom-space"></div>*/}
-            {/*<Divider/>*/}
-          {/*</div>*/}
-        {/*)}*/}
+        {pinned.map((project,i) => <ProjectThumbnail key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.numberOfTasks} title={project.name}/>)}
 
         <div className="clear"/>
 
-
-        <div className="bottom-space margin-top">
-          <p className="color-gray small-line-spacing">All Projects</p>
-        </div>
-
-        {projects.map((project,i) => <ProjectThumbnail onProjectInfoView={()=>this.openProjectInfoDialog(project)} key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/> )}
-        {!Boolean(projects.length) && (
-          <div className="bottom-space">
-            <p className="color-gray medium-line-spacing">No projects found.</p>
+        {Boolean(this.state.projects.length) && (
+          <div className="bottom-space margin-top">
+            <p className="color-gray small-line-spacing">All Projects</p>
           </div>
         )}
+
+        {projects.map((project,i) => <ProjectThumbnail onProjectInfoView={()=>this.openProjectInfoDialog(project)} key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.numberOfTasks} title={project.name}/> )}
+
+        {(!Boolean(projects.length) && !this.state.loading) && (
+          <div className="bottom-space">
+            <p className="no-results-paragraph">We couldn't find any project.</p>
+          </div>
+        )}
+
+        <div className="text-center">
+          <Spinner spin={this.state.loading}/>
+        </div>
 
       </div>
     )

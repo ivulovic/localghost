@@ -8,8 +8,24 @@ import ListItemAvatar from "@material-ui/core/es/ListItemAvatar/ListItemAvatar";
 import {Project} from "./Project";
 import {Route, Link} from "react-router-dom";
 import ProjectsDashboard from "./ProjectsDashboard";
+import ProjectService from "../services/project.service";
+import {Spinner} from "../components/Spinner";
 
 export default class Projects extends Component{
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      projects:[]
+    }
+  }
+
+  componentDidMount() {
+    ProjectService.getProjects()
+      .then(projects=>this.setState({projects, loading: false}))
+      .catch(error=>this.setState({loading: false}))
+  }
 
   render(){
     return(
@@ -24,11 +40,18 @@ export default class Projects extends Component{
 
           <div>
             <strong className="list-title">Projects</strong>
+            <div className="text-center">
+              <Spinner spin={this.state.loading}/>
+            </div>
+            {(!Boolean(this.state.projects.length) && !this.state.loading) && (<p className="no-results-paragraph">
+                We couldn't find any project.
+              </p>
+            )}
             <List className="side-menu-list">
-              {['Projects 1', 'Influencer LTD'].map((project, i) => (
-                  <ListItem key={project} className="no-padding-left pointer">
-                    <Link to={`/projects/${i+1}`}>
-                      <ListItemText className="color-gray" primary={project}/>
+              {this.state.projects.map((project) => (
+                  <ListItem key={project.id} className="no-padding-left pointer">
+                    <Link to={`/projects/${project.id}`}>
+                      <ListItemText className="color-gray" primary={project.name}/>
                     </Link>
                   </ListItem>
               ))}
