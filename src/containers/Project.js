@@ -425,10 +425,6 @@ export class Project extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  handleRowVisibility = id =>{
-    document.getElementById("hidden-controls-right-"+id).classList.toggle("not-visible");
-  };
-
   toggleCategory = ( event, id, category ) =>{
     event.stopPropagation();
     let task = this.state.project.tasks.find(item=>item.id === id);
@@ -451,7 +447,6 @@ export class Project extends React.Component {
   updateStatus = (event, id, status) => {
     event.stopPropagation();
     this.update('tasks', {id, status})
-    this.handleRowVisibility(id);
   };
 
   existsInFilters = (key, obj) => {
@@ -510,13 +505,13 @@ export class Project extends React.Component {
     ];
 
     const columns = [
-      { id: 'category',              sortable:false,  numeric: false, disablePadding: true, label: '' , width:"300px"},
-      { id: 'project',               sortable:false,  numeric: false, disablePadding: true, label: '', width:"250px" },
-      { id: 'id',                    sortable:false,  numeric: false, disablePadding: true, label: '' , width:"50px"},
-      { id: 'title',                 sortable:false,  numeric: false, disablePadding: true, label: '' , width:"350px"},
-      { id: 'status',                sortable:false,  numeric: false, disablePadding: true, label: '' , width:"50px"},
-      { id: 'hidden-controls-right', sortable:false,  numeric: false, disablePadding: true, label: '', width:"50px" },
-      { id: 'Time',                  sortable:false,  numeric: false, disablePadding: true, label: '' ,  width:"100px"},
+      { id: 'category',              sortable:false,  numeric: false, disablePadding: true, label: '', width:"300px"},
+      { id: 'project',               sortable:false,  numeric: false, disablePadding: true, label: ''},
+      { id: 'id',                    sortable:false,  numeric: false, disablePadding: true, label: '' },
+      { id: 'title',                 sortable:false,  numeric: false, disablePadding: true, label: '', width:"300px" },
+      { id: 'status',                sortable:false,  numeric: false, disablePadding: true, label: '' },
+      { id: 'hidden-controls-right', sortable:false,  numeric: false, disablePadding: true, label: '', width:"100px"},
+      { id: 'Time',                  sortable:false,  numeric: false, disablePadding: true, label: ''},
     ];
 
     let data = this.dataWithFiltersApplied();
@@ -588,12 +583,12 @@ export class Project extends React.Component {
                   const isSelected = this.isSelected(n.id);
                   return (
                     <React.Fragment key={n.id}>
-                    <TableRow hover onMouseOver={()=>{this.handleRowVisibility(n.id)}} onMouseOut={()=>{this.handleRowVisibility(n.id)}} onClick={() => this.toggleRowExpansion(n.id)} role="checkbox" aria-checked={isSelected} tabIndex={-1}  selected={isSelected} className="enhanced-table-row">
-                      <TableCell padding="checkbox">
+                    <TableRow hover onClick={() => this.toggleRowExpansion(n.id)} role="checkbox" aria-checked={isSelected} tabIndex={-1}  selected={isSelected} className="enhanced-table-row">
+                      <TableCell width={"50px"} padding="checkbox">
                         <Checkbox className={isSelected ? "checkbox-selected":"checkbox-not-selected"} onClick={(event)=>this.handleCheckboxClick(event, n.id)} checked={isSelected} color={"default"} />
                       </TableCell>
 
-                      <TableCell align="left" padding="none">
+                      <TableCell className={"text-justify"} align="left" padding="none">
                         {taskCategories.map(category=>(
                           <div key={category.id} className="col-xs-4 col-sm-4 col-md-2 col-lg-2 no-padding">
                             <Tooltip title={category.name.toUpperCase()}>
@@ -618,7 +613,7 @@ export class Project extends React.Component {
                         {n.status === 'progress' && <Tooltip title="IN PROGRESS"><GoPulse size={20} fill={"#039be5"}/></Tooltip>}
                       </TableCell>
                       <TableCell align="left" padding="none">
-                        <span id={"hidden-controls-right-"+n.id} className="not-visible">
+                        <span id={"hidden-controls-right-"+n.id}>
                           {n.status === 'start' && (
                             <Tooltip title="IN PROGRESS">
                               <Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'progress')}> <GoPulse size={20} fill={"#c7c0c0"}/> </Button>
@@ -626,7 +621,7 @@ export class Project extends React.Component {
                           {n.status === 'done' && (<Tooltip title="IN PROGRESS"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'progress')}> <GoPulse size={20} fill={"#c7c0c0"}/> </Button></Tooltip>)}
                           {n.status === 'progress' && (
                             <div className="inline-block">
-                              <div className="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+                              <div className="col-xs-6 col-sm-6 col-md-3 col-lg-3 no-padding small-space-after">
                                 <Tooltip title="TO DO"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'start')}> <GoTasklist size={20} fill={"#c7c0c0"}/> </Button></Tooltip>
                               </div>
                               <div className="col-xs-6 col-sm-6 col-md-3 col-lg-3 no-padding ">

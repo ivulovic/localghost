@@ -310,6 +310,9 @@ code {
 }
 .table-header-section{
 }
+.table td{
+  padding: 15px 10px 15px 10px;
+}
 .hidden{
   display: none!important;
 }
