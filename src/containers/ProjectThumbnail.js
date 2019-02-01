@@ -1,6 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {MdPalette} from "react-icons/md";
+import {MdDelete, MdEdit, MdPalette} from "react-icons/md";
 import Button from "@material-ui/core/es/Button/Button";
 import Menu from "@material-ui/core/es/Menu/Menu";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
@@ -105,76 +105,76 @@ export class ProjectThumbnail extends React.Component{
     const options = themes;
     const ITEM_HEIGHT = 48;
     return (
-      <NavLink  to={"/projects/"+this.props.id}>
-        <div className={"color-box relative "+this.props.theme}>
-          <p className="color-box-counter">{this.props.count}%</p>
-          <p className="color-box-title">{this.props.title}</p>
-          <div className="color-box-settings">
-            <div>
-              <Button onClick={this.openPinDialog} className="color-white no-padding">
-                <span className="color-box-settings-icon"> {this.props.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />} </span>
-              </Button>
-              <Button onClick={this.openThemePicker} className="color-white no-padding">
-                <span className="color-box-settings-icon"> <MdPalette/> </span>
-              </Button>
-              <Button onClick={this.openEditDialog} className="color-white no-padding">
-                <span className="color-box-settings-icon"> <FaPaintRoller size={26}/> </span>
-              </Button>
-              <Button onClick={this.openRemoveDialog} className="color-white no-padding">
-                <span className="color-box-settings-icon"> <GoFlame size={28} /> </span>
-              </Button>
+      <div className="project-thumbnail col-xs-11 col-sm-11 col-md-3 col-lg-3 bottom-space">
+        <NavLink to={"/projects/"+this.props.id}>
+          <div className={"project-thumbnail-theme "+this.props.theme}/>
+          <p className="col-xs-12 col-sm-12 col-md-11 col-lg-11 project-thumbnail-project-name project-thumbnail-paragraph">{this.props.title}</p>
+          <p className="col-xs-12 col-sm-12 col-md-11 col-lg-11 text-muted project-thumbnail-paragraph small-bottom-space">{this.props.count} Tasks</p>
 
-              <Dialog open={this.state.pinDialogOpened} onClose={this.closePinDialog} onClick={this.preventClose}>
-                <DialogTitle id="alert-dialog-title">{this.props.pinned ? 'Unpin ':'Pin '} Project</DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    This means that your project <strong className="color-gray">{this.props.title}</strong> {this.props.pinned ? 'will not be shown anymore' : 'will appear above all other projects'} in pinned section.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.closePinDialog} color="primary" autoFocus> Cancel </Button>
-                  <Button onClick={this.confirmProjectPin} color="primary"> Confirm </Button>
-                </DialogActions>
-              </Dialog>
+          <Button className="col-xs-3 col-sm-3 col-md-3 col-lg-3 no-side-padding" onClick={this.openPinDialog}>
+            <span className="project-thumbnail-settings-icon">  {this.props.pinned ? <TiPin size={28} /> : <TiPinOutline size={28} />} </span>
+          </Button>
+          <Button className="col-xs-3 col-sm-3 col-md-3 col-lg-3 no-side-padding" onClick={this.openThemePicker} >
+            <span className="project-thumbnail-settings-icon"> <MdPalette size={28}/> </span>
+          </Button>
+          <Button className="col-xs-3 col-sm-3 col-md-3 col-lg-3 no-side-padding"  onClick={this.openEditDialog}>
+            <span className="project-thumbnail-settings-icon"> <MdEdit size={28}/> </span>
+          </Button>
+          <Button className="col-xs-3 col-sm-3 col-md-3 col-lg-3 no-side-padding" onClick={this.openRemoveDialog}>
+            <span className="project-thumbnail-settings-icon"> <MdDelete size={28} /> </span>
+          </Button>
 
-              <Menu anchorEl={this.state.themePickerAnchor} open={Boolean(this.state.themePickerAnchor)} onClose={this.closeThemePicker} PaperProps={{style: {maxHeight: ITEM_HEIGHT * 4.5, width: 200}}}>
-                {options.map((option, j) => (
-                  <MenuItem key={j} selected={option.id === this.props.theme} className="color-gray" onClick={(event)=>this.handleThemeChange(event, option.id, this.props.id)}>
-                    <span className={'theme-preview '+option.id}> </span> {option.name}
-                  </MenuItem>
-                ))}
-              </Menu>
+          <div className="clear"/>
+          <div className={"project-thumbnail-bottom-line "+this.props.theme}/>
+        </NavLink>
+        <Dialog open={this.state.pinDialogOpened} onClose={this.closePinDialog} onClick={this.preventClose}>
+          <DialogTitle id="alert-dialog-title">{this.props.pinned ? 'Unpin ':'Pin '} Project</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              This means that your project <strong className="color-gray">{this.props.title}</strong> {this.props.pinned ? 'will not be shown anymore' : 'will appear above all other projects'} in pinned section.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.closePinDialog} color="primary" autoFocus> Cancel </Button>
+            <Button onClick={this.confirmProjectPin} color="primary"> Confirm </Button>
+          </DialogActions>
+        </Dialog>
 
-              <Dialog open={this.state.editDialogOpened} onClose={this.closeEditDialog} onClick={this.preventClose}>
-                <DialogTitle id="form-dialog-title">Update Project Name</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    You are about to change project name of <strong className="color-gray"> {this.props.title} </strong> with the new one:
-                  </DialogContentText>
-                  <TextField autoFocus autoComplete="off" id="name" label="Project name" type="text" defaultValue={this.props.title} fullWidth inputRef={this.editedProjectName}/>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.closeEditDialog} color="primary"> Cancel </Button>
-                  <Button onClick={this.confirmEditingProject} color="primary"> Save </Button>
-                </DialogActions>
-              </Dialog>
+        <Menu anchorEl={this.state.themePickerAnchor} open={Boolean(this.state.themePickerAnchor)} onClose={this.closeThemePicker} PaperProps={{style: {maxHeight: ITEM_HEIGHT * 4.5, width: 200}}}>
+          {options.map((option, j) => (
+            <MenuItem key={j} selected={option.id === this.props.theme} className="color-gray" onClick={(event)=>this.handleThemeChange(event, option.id, this.props.id)}>
+              <span className={'theme-preview '+option.id}> </span> {option.name}
+            </MenuItem>
+          ))}
+        </Menu>
 
-              <Dialog open={this.state.removeDialogOpened} onClose={this.closeRemoveDialog} onClick={this.preventClose}>
-                <DialogTitle id="alert-dialog-title">Confirm Project Removal</DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    This means that your project <strong className="color-gray">{this.props.title}</strong> and its items will be removed forever.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.closeRemoveDialog} color="primary"> Cancel </Button>
-                  <Button onClick={this.confirmProjectRemoval} color="primary" autoFocus> Confirm </Button>
-                </DialogActions>
-              </Dialog>
-            </div>
-          </div>
-        </div>
-      </NavLink>
+        <Dialog open={this.state.editDialogOpened} onClose={this.closeEditDialog} onClick={this.preventClose}>
+          <DialogTitle id="form-dialog-title">Update Project Name</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              You are about to change project name of <strong className="color-gray"> {this.props.title} </strong> with the new one:
+            </DialogContentText>
+            <TextField autoFocus autoComplete="off" id="name" label="Project name" type="text" defaultValue={this.props.title} fullWidth inputRef={this.editedProjectName}/>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.closeEditDialog} color="primary"> Cancel </Button>
+            <Button onClick={this.confirmEditingProject} color="primary"> Save </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={this.state.removeDialogOpened} onClose={this.closeRemoveDialog} onClick={this.preventClose}>
+          <DialogTitle id="alert-dialog-title">Confirm Project Removal</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              This means that your project <strong className="color-gray">{this.props.title}</strong> and its items will be removed forever.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.closeRemoveDialog} color="primary"> Cancel </Button>
+            <Button onClick={this.confirmProjectRemoval} color="primary" autoFocus> Confirm </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     )
   }
 }

@@ -7,6 +7,7 @@ import Avatar from "@material-ui/core/es/Avatar/Avatar";
 import ListItemAvatar from "@material-ui/core/es/ListItemAvatar/ListItemAvatar";
 import {Project} from "./Project";
 import {Route, Link} from "react-router-dom";
+import ProjectsDashboard from "./ProjectsDashboard";
 
 export default class Projects extends Component{
 
@@ -24,9 +25,9 @@ export default class Projects extends Component{
           <div>
             <strong className="list-title">Projects</strong>
             <List className="side-menu-list">
-              {['Projects 1', 'Influencer LTD', 'Some test shit'].map((project) => (
-                  <ListItem key={project} className="no-padding-left pointer" onClick={()=>{}}>
-                    <Link to={`/projects/${Math.floor(Math.random()*1000)}`}>
+              {['Projects 1', 'Influencer LTD'].map((project, i) => (
+                  <ListItem key={project} className="no-padding-left pointer">
+                    <Link to={`/projects/${i+1}`}>
                       <ListItemText className="color-gray" primary={project}/>
                     </Link>
                   </ListItem>
@@ -38,8 +39,8 @@ export default class Projects extends Component{
         <div className="col-xs-12 col-sm-12 col-md-10 col-lg-10 no-padding">
           <div className="project-body-right">
             <Route path={`/projects/:id`} component={Project}/>
-            <Route exact path={"/projects"} render={() =>  <p className="text-muted">Please select a project.</p>}/>
-            <Route exact path={"/"} render={() => <p className="text-muted">Please select a project.</p>}/>
+            <Route exact path={"/projects"} component={ProjectsDashboard}/>
+            <Route exact path={"/"} component={ProjectsDashboard}/>
           </div>
         </div>
 

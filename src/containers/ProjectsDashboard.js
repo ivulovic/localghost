@@ -1,7 +1,7 @@
 import React from "react";
 import {Component} from "react";
 import {ProjectThumbnail} from "./ProjectThumbnail";
-import {GoSearch} from "react-icons/go";
+import {GoFlame, GoSearch} from "react-icons/go";
 import Divider from "@material-ui/core/es/Divider/Divider";
 import {TextField} from "@material-ui/core";
 import InputAdornment from "@material-ui/core/es/InputAdornment/InputAdornment";
@@ -14,8 +14,12 @@ import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 import Menu from "@material-ui/core/es/Menu/Menu";
 import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
 import themes from "../utils/themes";
+import {TiPin, TiPinOutline} from "react-icons/ti";
+import {MdDelete, MdEdit, MdPalette} from "react-icons/md";
+import {FaEdit, FaPaintRoller} from "react-icons/fa";
+import {NavLink} from "react-router-dom";
 
-export default class ProjectsA extends Component{
+export default class ProjectsDashboard extends Component{
   constructor(props) {
     super(props);
     this.state = {
@@ -228,37 +232,38 @@ export default class ProjectsA extends Component{
           </DialogActions>
         </Dialog>
 
+        <div className="bottom-space">
+          <p className="color-gray medium-line-spacing medium-text">Projects</p>
+        </div>
+
         <div className="clear"></div>
 
         {Boolean(pinned.length) && (
           <div className="bottom-space">
-            <p className="color-gray medium-line-spacing medium-text">Pinned Projects</p>
+            <p className="color-gray small-line-spacing">Pinned Projects</p>
           </div>
         )}
 
         {pinned.map((project,i) => <ProjectThumbnail key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/>)}
 
-        {Boolean(pinned.length) && (
-          <div className="bottom-space">
-            <div className="bottom-space"></div>
-            <Divider/>
-          </div>
-        )}
+        {/*{Boolean(pinned.length) && (*/}
+          {/*<div className="bottom-space">*/}
+            {/*<div className="bottom-space"></div>*/}
+            {/*<Divider/>*/}
+          {/*</div>*/}
+        {/*)}*/}
 
-        <div className="bottom-space">
-          <p className="color-gray medium-line-spacing medium-text">Projects</p>
+        <div className="clear"/>
+
+
+        <div className="bottom-space margin-top">
+          <p className="color-gray small-line-spacing">All Projects</p>
         </div>
 
         {projects.map((project,i) => <ProjectThumbnail onProjectInfoView={()=>this.openProjectInfoDialog(project)} key={i} onProjectPin={this.handleProjectPin} onProjectRemoval={this.handleProjectRemoval} onProjectNameChange={this.handleProjectNameChange} onThemeChange = {this.handleThemeChange} id={project.id} pinned={project.pinned} theme={project.theme} count={project.count} title={project.title}/> )}
         {!Boolean(projects.length) && (
           <div className="bottom-space">
-            {/*<p className="color-gray medium-line-spacing">No projects found.</p>*/}
-             <div className="text-center">
-               <h1 className="color-red big-text">Whoops...</h1>
-               <p className="color-gray small-line-spacing">
-                 We couldn't find any.
-               </p>
-             </div>
+            <p className="color-gray medium-line-spacing">No projects found.</p>
           </div>
         )}
 

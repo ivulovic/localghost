@@ -324,10 +324,9 @@ code {
   position: relative;
 }
 .color-box{
-  height: 200px;
+  min-height: 218px;
   display: inline-block;
-  overflow: hidden;
-  /*float: left;*/
+  overflow: auto;
   margin-right: 10px;
   margin-bottom: 10px;
   text-align: justify;
@@ -578,9 +577,46 @@ code {
     width: 100%;
   }
 }
-/*@media screen and (max-width: 345px) {*/
 
-/*}*/
+/*new project thumn*/
+.project-thumbnail{
+  margin: 20px!important;
+  float: left;
+}
+.project-thumbnail-theme{
+  width: 100%;
+  height: 200px;
+}
+.project-thumbnail-settings-icon{
+  color: gray;
+}
+.project-thumbnail-bottom-line{
+  height: 6px;
+  width: 100%;
+}
+.project-thumbnail-paragraph{
+  padding: 10px 14px!important;
+}
+.project-thumbnail-project-name{
+  color:#039BE5;
+  font-weight: 600;
+  font-size: 18px;
+  margin-top: 10px;
+}
+.divider{
+  height: 1px;
+  color: #7f7f87;
+}
+. no-side-padding{
+  padding-left: 0px!important;
+  padding-right: 0px!important;
+}
+@media screen and (max-width: 345px) {
+  .project-thumbnail{
+    padding: 0px!important;
+    margin:10px!important;
+  }
+}
 @media screen and (max-width: 1024px) {
   .color-box{
     width: 100%;
