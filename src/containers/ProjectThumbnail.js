@@ -41,10 +41,10 @@ export class ProjectThumbnail extends React.Component{
     this.setState({ themePickerAnchor: null });
   };
 
-  handleThemeChange = (event, theme, id) => {
+  handleThemeChange = (event, theme) => {
     this.preventClose(event);
     this.setState({ themePickerAnchor: null });
-    this.props.onThemeChange(id, theme);
+    this.props.onUpdate({id: this.props.id, theme: theme});
   };
 
   openEditDialog = (event) => {
@@ -61,7 +61,7 @@ export class ProjectThumbnail extends React.Component{
     let newProjectName = this.editedProjectName.current.value;
     if(newProjectName && newProjectName.trim()){
       if(newProjectName.trim() !== this.props.title){
-        this.props.onProjectNameChange(this.props.id, newProjectName.trim());
+        this.props.onUpdate({id:this.props.id, name:newProjectName.trim()});
       }
     }
     this.closeEditDialog(event);
@@ -78,7 +78,7 @@ export class ProjectThumbnail extends React.Component{
   };
 
   confirmProjectRemoval = (event) => {
-    this.props.onProjectRemoval(this.props.id);
+    this.props.onRemove(this.props.id);
     this.closeRemoveDialog(event);
   };
 
@@ -93,7 +93,7 @@ export class ProjectThumbnail extends React.Component{
   };
 
   confirmProjectPin = (event) => {
-    this.props.onProjectPin(this.props.id);
+    this.props.onUpdate({id: this.props.id, pinned:!this.props.pinned});
     this.closePinDialog(event);
   };
 
@@ -101,7 +101,7 @@ export class ProjectThumbnail extends React.Component{
     const options = themes;
     const ITEM_HEIGHT = 48;
     return (
-      <div className="project-thumbnail col-xs-11 col-sm-11 col-md-3 col-lg-3 bottom-space">
+      <div className="col-xs-11 col-sm-11 col-md-3 col-lg-3 bottom-space project-thumbnail">
         <NavLink to={"/projects/"+this.props.id}>
           <div className={"project-thumbnail-theme "+this.props.theme}/>
           <p className="col-xs-12 col-sm-12 col-md-11 col-lg-11 project-thumbnail-project-name project-thumbnail-paragraph">{this.props.title}</p>
@@ -138,7 +138,7 @@ export class ProjectThumbnail extends React.Component{
 
         <Menu anchorEl={this.state.themePickerAnchor} open={Boolean(this.state.themePickerAnchor)} onClose={this.closeThemePicker} PaperProps={{style: {maxHeight: ITEM_HEIGHT * 4.5, width: 200}}}>
           {options.map((option, j) => (
-            <MenuItem key={j} selected={option.id === this.props.theme} className="color-gray" onClick={(event)=>this.handleThemeChange(event, option.id, this.props.id)}>
+            <MenuItem key={j} selected={option.id === this.props.theme} className="color-gray" onClick={(event)=>this.handleThemeChange(event, option.id)}>
               <span className={'theme-preview '+option.id}> </span> {option.name}
             </MenuItem>
           ))}
@@ -150,7 +150,9 @@ export class ProjectThumbnail extends React.Component{
             <DialogContentText>
               You are about to change project name of <strong className="color-gray"> {this.props.title} </strong> with the new one:
             </DialogContentText>
-            <TextField autoFocus autoComplete="off" id="name" label="Project name" type="text" defaultValue={this.props.title} fullWidth inputRef={this.editedProjectName}/>
+            <form onSubmit={this.confirmEditingProject}>
+              <TextField autoFocus autoComplete="off" id="name" label="Project name" type="text" defaultValue={this.props.title} fullWidth inputRef={this.editedProjectName}/>
+            </form>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.closeEditDialog} color="primary"> Cancel </Button>

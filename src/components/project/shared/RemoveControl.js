@@ -43,7 +43,7 @@ export class RemoveControl extends React.Component{
 
         {this.props.mode==='default' && (
           <div className="inline-block small-margin-top minimum-space-after">
-            <Button variant="outlined" className="small-space-after no-radius color-gray" onClick={this.openRemoveDialog}><MdDelete size={20}/> &nbsp; Remove</Button>
+            <Button className="small-space-after no-radius color-gray" onClick={this.openRemoveDialog}><MdDelete size={20}/> &nbsp; Remove</Button>
           </div>
         )}
 

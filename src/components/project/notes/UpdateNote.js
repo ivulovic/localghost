@@ -13,29 +13,33 @@ export class UpdateNote extends React.Component{
 
   constructor(props) {
     super(props);
-    this.openUpdateDialog = this.openUpdateDialog.bind(this);
-    this.closeUpdateDialog = this.closeUpdateDialog.bind(this);
-    this.confirmUpdating = this.confirmUpdating.bind(this);
     this.updatedTitle = React.createRef();
     this.updatedDescription = React.createRef();
     this.state = {
       updateDialogOpened: false
     }
   }
-  openUpdateDialog(){
+
+  openUpdateDialog = () => {
     this.setState({ updateDialogOpened: true });
-  }
-  closeUpdateDialog(){
+  };
+
+  closeUpdateDialog = () => {
     this.setState({ updateDialogOpened: false });
-  }
-  confirmUpdating(){
+  };
+
+  confirmUpdating = () => {
     if(this.updatedDescription.current && this.updatedDescription.current.value && this.updatedDescription.current.value.trim() && this.updatedTitle.current && this.updatedTitle.current.value && this.updatedTitle.current.value.trim()){
       if(this.updatedTitle.current.value.trim() !== this.props.title.trim() || this.updatedDescription.current.value.trim() !== this.props.description.trim()){
         this.props.onUpdate("notes", {id:this.props.id, title: this.updatedTitle.current.value.trim(), description: this.updatedDescription.current.value.trim()}, this.props.taskId, this.props.id);
       }
       this.closeUpdateDialog();
     }
-  }
+  };
+
+  preventDefaultBehaviour = (event) => {
+    event.preventDefault();
+  };
 
   render(){
     return(
@@ -51,7 +55,7 @@ export class UpdateNote extends React.Component{
 
         {this.props.mode==='default' && (
           <div className="inline-block small-margin-top minimum-space-after">
-            <Button variant="outlined" className="no-radius color-gray" onClick={this.openUpdateDialog}><MdEdit size={20}/> &nbsp; Update</Button>
+            <Button className="no-radius color-gray" onClick={this.openUpdateDialog}><MdEdit size={20}/> &nbsp; Update</Button>
           </div>
         )}
 
@@ -61,10 +65,12 @@ export class UpdateNote extends React.Component{
             <DialogContentText>
               You are about to change note content with the new one.
             </DialogContentText>
-            <div className="bottom-space"/>
-            <TextField autoFocus autoComplete="off" id="title" label="Title" type="text" defaultValue={this.props.title} fullWidth inputRef={this.updatedTitle}/>
-            <div className="bottom-space"/>
-            <TextField autoFocus autoComplete="off" multiline rows={5} id="description" label="Description" type="text" defaultValue={this.props.description} fullWidth inputRef={this.updatedDescription}/>
+            <form onSubmit={this.preventDefaultBehaviour}>
+              <div className="bottom-space"/>
+              <TextField autoFocus autoComplete="off" id="title" label="Title" type="text" defaultValue={this.props.title} fullWidth inputRef={this.updatedTitle}/>
+              <div className="bottom-space"/>
+              <TextField autoFocus autoComplete="off" multiline rows={5} id="description" label="Description" type="text" defaultValue={this.props.description} fullWidth inputRef={this.updatedDescription}/>
+            </form>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.closeUpdateDialog} color="primary"> Cancel </Button>

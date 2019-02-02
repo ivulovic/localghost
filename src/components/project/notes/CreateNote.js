@@ -5,6 +5,8 @@ import Dialog from "@material-ui/core/es/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
+import {FaPlusCircle} from "react-icons/fa";
+import {MdDelete} from "react-icons/md";
 
 export class CreateNote extends React.Component {
   constructor(props){
@@ -46,19 +48,23 @@ export class CreateNote extends React.Component {
     this.setState({dialogOpened: false})
   }
 
+  preventDefaultBehaviour = (event) => {
+    event.preventDefault();
+  }
+
   render(){
     return(
       <div>
-        <Button variant="outlined" size="large" className="large-button" onClick={this.openDialog}>
-          New Note
-        </Button>
-        <div className="small-bottom-space"></div>
+        <Button className="flat-button" onClick={this.openDialog}><FaPlusCircle size={28} color="01B3E3"/> &nbsp;&nbsp; <span className="color-gray">New Note</span></Button>
+        <div className="small-bottom-space"/>
         <Dialog maxWidth='md' fullWidth open={this.state.dialogOpened} onClose={this.closeDialog}>
           <DialogTitle id="form-dialog-title">Create Note</DialogTitle>
           <DialogContent>
-            <TextField autoFocus autoComplete="off" id="title" label="Title" type="text" fullWidth inputRef={this.title}/>
-            <div className="bottom-space"></div>
-            <TextField autoComplete="off" id="description" label="Description" type="text" fullWidth inputRef={this.description} multiline rows="5"/>
+            <form onSubmit={this.preventDefaultBehaviour}>
+              <TextField autoFocus autoComplete="off" id="title" label="Title" type="text" fullWidth inputRef={this.title}/>
+              <div className="bottom-space"/>
+              <TextField autoComplete="off" id="description" label="Description" type="text" fullWidth inputRef={this.description} multiline rows="5"/>
+            </form>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.closeDialog} color="primary"> Cancel </Button>

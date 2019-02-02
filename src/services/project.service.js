@@ -20,7 +20,7 @@ const ProjectService = {
         resolve(
           {
             id:id,
-            project: "Other one",
+            name: "Other one",
             tasks:[
               {
                 id:21,

@@ -11,13 +11,13 @@ export class Note extends React.Component{
       <ExpansionPanel className="no-padding no-shadow">
         <ExpansionPanelSummary className={"no-padding"} expandIcon={<FaChevronDown size={13}/>}>
           <div>
-            <p className="note-title">{this.props.title}</p>
+            <p className="note-title standard-font-size">{this.props.title}</p>
           </div>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={"no-padding no-margin"}>
           <div>
             <p className="text-muted small-bottom-space">Description:</p>
-            <p className="color-gray small-line-spacing text-justify">{this.props.description}</p>
+            <p className="color-gray small-line-spacing text-justify standard-font-size">{this.props.description}</p>
             <div className="small-bottom-space"> </div>
             <UpdateNote mode="default"  taskId={this.props.taskId} title={this.props.title} id={this.props.id} description={this.props.description} onUpdate={this.props.onUpdate}/>
             <RemoveControl mode="default" taskId={this.props.taskId}  topic="note" id={this.props.id} onRemove={this.props.onRemove}/>

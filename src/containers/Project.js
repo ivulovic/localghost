@@ -8,16 +8,18 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
-import {MdCheckBox, MdDelete} from "react-icons/md";
-import {FaExclamationTriangle, FaRegCalendarAlt} from "react-icons/fa";
+import {MdCheckBox, MdDelete, MdSync} from "react-icons/md";
+import {FaExclamationTriangle, FaPlusCircle, FaRegCalendarAlt} from "react-icons/fa";
 import Button from "@material-ui/core/es/Button/Button";
-import {GoBookmark, GoPulse, GoTasklist, GoTelescope} from "react-icons/go";
-import {IoIosArchive, IoIosMoon} from "react-icons/io";
+import {GoBookmark, GoPulse, GoSearch, GoSync, GoTasklist, GoTelescope} from "react-icons/go";
+import {IoIosArchive, IoIosMoon, IoIosRefresh} from "react-icons/io";
 import {NoteList} from "../components/project/notes/NoteList";
 import {CreateNote} from "../components/project/notes/CreateNote";
 import {CreateTask} from "../components/project/tasks/CreateTask";
 import {Spinner} from "../components/Spinner";
 import ProjectService from "../services/project.service";
+import {TextField} from "@material-ui/core";
+import InputAdornment from "@material-ui/core/es/InputAdornment/InputAdornment";
 
 export class Project extends React.Component {
 
@@ -36,14 +38,14 @@ export class Project extends React.Component {
         category:[],
         status:[]
       },
-      id:this.props.match.params.id,
+      filterValue: '',
       project: {tasks:[]}
 
     };
   }
 
   componentDidMount() {
-    this.loadProjectById(this.state.id)
+    this.loadProjectById(this.props.match.params.id)
   }
 
   loadProjectById = (id) => {
@@ -54,13 +56,12 @@ export class Project extends React.Component {
       .finally(()=> this.setState({loading: false}))
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.id !== prevProps.match.params.id) {
+      this.loadProjectById(this.props.match.params.id)
+    }
+  }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-    this.setState({
-      id: nextProps.match.params.id
-    });
-    this.loadProjectById(nextProps.match.params.id)
-  };
 
   update = (key, obj, taskId, noteId) => {
     if(key==='tasks'){
@@ -131,7 +132,6 @@ export class Project extends React.Component {
     } else {
       let newArray = this.state.project.tasks.map((task )=> {
         if(task.id===taskId){
-          console.log(taskId, noteId);
           let keyIndex = task.notes.findIndex(note=>note.id===noteId);
           task.notes.splice(keyIndex, 1);
           return task;
@@ -204,6 +204,7 @@ export class Project extends React.Component {
     }
 
     return this.state.project.tasks ? this.state.project.tasks
+            .filter(item => this.state.filterValue ? item.title.trim().toLowerCase().indexOf(this.state.filterValue)>=0 : item)
             .filter(item => statusFilters.length ? statusFilters.indexOf(item.status) >= 0 : item)
             .filter(item => {
               if(!categoryFilters.length) return item;
@@ -319,6 +320,26 @@ export class Project extends React.Component {
     });
   };
 
+  preventDefaultBehaviour = (event) => {
+    event.preventDefault();
+  };
+
+  filterTasks = (event) => {
+    event.preventDefault();
+    let filterValue = event.target.value;
+    if(filterValue && filterValue.trim()){
+      this.setState({
+        ...this.state,
+        filterValue:filterValue.trim().toLowerCase()
+      })
+    } else {
+      this.setState({
+        ...this.state,
+        filterValue:''
+      })
+    }
+  }
+
   render() {
     let { order, orderBy, rowsPerPage, page } = this.state;
 
@@ -337,160 +358,165 @@ export class Project extends React.Component {
       { id: 'id',                    sortable:false,  numeric: false, disablePadding: true, label: '' },
       { id: 'title',                 sortable:false,  numeric: false, disablePadding: true, label: '', width:"300px" },
       { id: 'status',                sortable:false,  numeric: false, disablePadding: true, label: '' },
-      { id: 'status-controls', sortable:false,  numeric: false, disablePadding: true, label: '', width:"100px"},
+      { id: 'status-controls', sortable:false,  numeric: false, disablePadding: true, label: '', width:"120px"},
       { id: 'Time',                  sortable:false,  numeric: false, disablePadding: true, label: ''},
     ];
 
     let data = this.dataWithFiltersApplied();
 
     return (
-      <div>
-        <div className="margin-top"/>
+      <div className="margin-top">
         <CreateTask onCreate={this.create}/>
-        <div className={this.state.selected.length > 0 ? "highlight-header table-header":"table-header"}>
-          <div className={"col-xs-12 col-sm-12 col-lg-6 col-md-6 no-padding"}>
-            {this.state.selected.length > 0 ? (<p className="table-header-title">{this.state.selected.length } selected</p>) : (<p className="table-header-title">Tasks</p>)}
-          </div>
-          <div className={"col-xs-12 col-sm-12 col-lg-6 col-md-6 no-padding text-right"}>
-            {this.state.selected.length  > 0 ? (
-              <div className="inline-block table-header-section">
-                <Tooltip title="REMOVE">
-                  <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.multipleRemove('tasks')}>
-                    <MdDelete size={20} fill={"#e53935"}/>
-                  </Button>
-                </Tooltip>
-              </div>
-            ) : (
-              <div className="table-header-section">
-                {taskCategories.map((category) => (
-                  <div key={category.id} className="inline-block">
-                    <Tooltip title={category.name.toUpperCase()}>
-                      <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('category', category)}>
-                        {category.name==='important' && <FaExclamationTriangle className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#e53935": "#c7c0c0"} size={20}/>}
-                        {category.name==="overdue" && <FaRegCalendarAlt className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#E58C0D": "#c7c0c0"} size={20}/>}
-                        {category.name==="bookmark" && <GoBookmark className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#388e3c" : "#c7c0c0"} size={20}/>}
-                        {category.name==="observe" && <GoTelescope className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#039be5" : "#c7c0c0"} size={22}/>}
-                        {category.name==="snooze" && <IoIosMoon className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8e24aa" : "#c7c0c0"} size={22}/>}
-                        {category.name==="archive" && <IoIosArchive className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8d6e63" : "#c7c0c0"} size={20}/>}
-                      </Button>
-                    </Tooltip>
-                  </div>
-                ))}
-                <Tooltip title="TO DO"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:1, name:"start"})}> <GoTasklist size={20} fill={this.existsInFilters('status', {id:1, name:"start"}) ? "#E58C0D": "#c7c0c0"}/> </Button></Tooltip>
-                <Tooltip title="IN PROGRESS"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:2, name:"progress"})}> <GoPulse fill={this.existsInFilters('status', {id:2, name:"progress"}) ? "#039be5" : "#c7c0c0"}/> </Button></Tooltip>
-                <Tooltip title="DONE"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:3, name:"done"})}> <MdCheckBox size={22} fill={this.existsInFilters('status', {id:3, name:"done"}) ? "#388e3c" : "#c7c0c0"}/> </Button></Tooltip>
-              </div>)}
-          </div>
-        </div>
-
+        <form onSubmit={this.preventDefaultBehaviour} className="search-project-form pull-right">
+          <TextField type="text" autoComplete="off" placeholder="Enter the task title..." id="searchTask" label="" fullWidth onKeyUp={this.filterTasks} InputProps={{startAdornment: (<InputAdornment position="start"><GoSearch /></InputAdornment>)}}/>
+        </form>
         <div className="clear"/>
 
-        <div className="tableWrapper">
-          <Table className="table"  aria-labelledby="tableTitle">
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  {data.length > 0 && <Checkbox color="default" className={(this.state.selected.length === data.length && data.length!==0) ? "checkbox-selected":"checkbox-not-selected"} indeterminate={this.state.selected.length > 0 && this.state.selected.length < data.length} checked={this.state.selected.length === data.length && data.length!==0} onChange={this.handleSelectAllClick}/>}
-                </TableCell>
-                {columns.map((row)=> (
-                  <TableCell key={row.id} width={row.width} align={row.numeric ? 'right' : 'left'} padding={'dense'} sortDirection={orderBy === row.id ? order : false}>
-                    {row.sortable ?  (<Tooltip title="Sort" placement={row.numeric ? 'bottom-end' : 'bottom-start'} enterDelay={300}>
-                      <TableSortLabel active={orderBy === row.id} direction={order} onClick={this.createSortHandler(row.id)}>{row.label}</TableSortLabel>
-                    </Tooltip>) : (<span className="label">{row.label}</span>)}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {this.state.loading && (
-                <tr className="text-center">
-                  <td colSpan={8}>
-                    <Spinner spin={this.state.loading}/>
-                  </td>
-                </tr>
-              )}
-              {(!data.length && !this.state.loading) && (<tr><td className="small-margin-top inline-block no-results-paragraph" width="100%" colSpan={7}>We couldn't find any data.</td></tr>)}
-              {this.stableSort(data, this.getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((n) => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <React.Fragment key={n.id}>
-                    <TableRow hover onClick={() => this.toggleRowExpansion(n.id)} role="checkbox" aria-checked={isSelected} tabIndex={-1}  selected={isSelected} className="enhanced-table-row">
-                      <TableCell width={"50px"} padding="checkbox">
-                        <Checkbox className={isSelected ? "checkbox-selected":"checkbox-not-selected"} onClick={(event)=>this.handleCheckboxClick(event, n.id)} checked={isSelected} color={"default"} />
-                      </TableCell>
-
-                      <TableCell className={"text-justify"} align="left" padding="none">
-                        {taskCategories.map(category=>(
-                          <div key={category.id} className="col-xs-4 col-sm-4 col-md-2 col-lg-2 no-padding">
-                            <Tooltip title={category.name.toUpperCase()}>
-                              <Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.toggleCategory(event, n.id, category)}>
-                                {category.name==='important' && <FaExclamationTriangle className="table-row-icon important-icon" fill={n.categories.findIndex(category => category.name === 'important') !== -1 ? "#e53935": "#c7c0c0"} size={20}/>}
-                                {category.name==="overdue" && <FaRegCalendarAlt className="table-row-icon important-icon" fill={n.categories.findIndex(category => category.name === 'overdue') !== -1  ? "#E58C0D": "#c7c0c0"} size={20}/>}
-                                {category.name==="bookmark" && <GoBookmark className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'bookmark') !== -1  ? "#388e3c" : "#c7c0c0"} size={20}/>}
-                                {category.name==="observe" && <GoTelescope className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'observe') !== -1  ? "#039be5" : "#c7c0c0"} size={22}/>}
-                                {category.name==="snooze" && <IoIosMoon className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'snooze') !== -1  ? "#8e24aa" : "#c7c0c0"} size={22}/>}
-                                {category.name==="archive" && <IoIosArchive className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'archive') !== -1  ? "#8d6e63" : "#c7c0c0"} size={20}/>}
-                              </Button>
-                            </Tooltip>
-                          </div>
-                        ))}
-                      </TableCell>
-                      <TableCell >{n.project.name}</TableCell>
-                      <TableCell align="left">#{n.id}</TableCell>
-                      <TableCell align="left">{n.title}</TableCell>
-                      <TableCell>
-                        {n.status === 'start' && <Tooltip title="TO DO"><GoTasklist fill={"#ff6f00"} size={20}/></Tooltip>}
-                        {n.status === 'done' && <Tooltip title="DONE"><MdCheckBox size={20} fill="#388e3c"/></Tooltip>}
-                        {n.status === 'progress' && <Tooltip title="IN PROGRESS"><GoPulse size={20} fill={"#039be5"}/></Tooltip>}
-                      </TableCell>
-                      <TableCell align="left" padding="none">
-                        <span id={"hidden-controls-right-"+n.id}>
-                          {n.status === 'start' && (
-                            <Tooltip title="IN PROGRESS">
-                              <Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'progress')}> <GoPulse size={20} fill={"#c7c0c0"}/> </Button>
-                            </Tooltip>)}
-                          {n.status === 'done' && (<Tooltip title="IN PROGRESS"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'progress')}> <GoPulse size={20} fill={"#c7c0c0"}/> </Button></Tooltip>)}
-                          {n.status === 'progress' && (
-                            <div className="inline-block">
-                              <div className="col-xs-6 col-sm-6 col-md-3 col-lg-3 no-padding small-space-after">
-                                <Tooltip title="TO DO"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'start')}> <GoTasklist size={20} fill={"#c7c0c0"}/> </Button></Tooltip>
-                              </div>
-                              <div className="col-xs-6 col-sm-6 col-md-3 col-lg-3 no-padding ">
-                                <Tooltip title="DONE"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'done')}> <MdCheckBox size={22} fill="#c7c0c0"/> </Button></Tooltip>
-                              </div>
-                            </div>)}
-                        </span>
-                      </TableCell>
-                      <TableCell align="left"><span className="label">Just now</span></TableCell>
-                    </TableRow>
-                    <TableRow className={this.state.expanded.indexOf(n.id)>=0 ? "":"hidden"}>
-                      <TableCell colSpan={8}>
-                        <p className="label">Description:</p>
-                        <p className="small-line-spacing small-bottom-space">{n.description}</p>
-                        <CreateNote taskId={n.id} onCreate={this.create}/>
-                        <NoteList taskId={n.id} notes={n.notes} onRemove={this.remove} onUpdate={this.update}/>
-                      </TableCell>
-                    </TableRow>
-                    </React.Fragment>
-                  );
-                })}
-            </TableBody>
-          </Table>
+        <div className="text-center">
+          {this.state.loading &&  <Spinner spin={this.state.loading}/>}
         </div>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{'aria-label': 'Previous Page'}}
-          nextIconButtonProps={{'aria-label': 'Next Page',}}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
+
+        {!this.state.loading && (
+        <div className="main">
+          <div className=""><p className="project-name">{this.state.project.name}</p></div>
+          <div className={this.state.selected.length > 0 ? "highlight-header table-header":"table-header"}>
+            <div className={"col-xs-12 col-sm-12 col-lg-6 col-md-6 no-padding"}>
+              {this.state.selected.length > 0 ? (<p className="table-header-title">{this.state.selected.length } selected</p>) : (<p className="table-header-title">Tasks</p>)}
+            </div>
+            <div className={"col-xs-12 col-sm-12 col-lg-6 col-md-6 no-padding text-right"}>
+              {this.state.selected.length  > 0 ? (
+                <div className="inline-block table-header-section">
+                  <Tooltip title="REMOVE">
+                    <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.multipleRemove('tasks')}>
+                      <MdDelete size={22} fill={"#e53935"}/>
+                    </Button>
+                  </Tooltip>
+                </div>
+              ) : (
+                <div className="table-header-section">
+                  {taskCategories.map((category) => (
+                    <div key={category.id} className="inline-block">
+                      <Tooltip title={category.name.toUpperCase()}>
+                        <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('category', category)}>
+                          {category.name==='important' && <FaExclamationTriangle className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#e53935": "#c7c0c0"} size={20}/>}
+                          {category.name==="overdue" && <FaRegCalendarAlt className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#E58C0D": "#c7c0c0"} size={20}/>}
+                          {category.name==="bookmark" && <GoBookmark className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#388e3c" : "#c7c0c0"} size={20}/>}
+                          {category.name==="observe" && <GoTelescope className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#039be5" : "#c7c0c0"} size={22}/>}
+                          {category.name==="snooze" && <IoIosMoon className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8e24aa" : "#c7c0c0"} size={22}/>}
+                          {category.name==="archive" && <IoIosArchive className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8d6e63" : "#c7c0c0"} size={20}/>}
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  ))}
+                  <Tooltip title="TO DO"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:1, name:"start"})}> <GoTasklist size={20} fill={this.existsInFilters('status', {id:1, name:"start"}) ? "#E58C0D": "#c7c0c0"}/> </Button></Tooltip>
+                  <Tooltip title="IN PROGRESS"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:2, name:"progress"})}> <GoPulse fill={this.existsInFilters('status', {id:2, name:"progress"}) ? "#039be5" : "#c7c0c0"}/> </Button></Tooltip>
+                  <Tooltip title="DONE"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:3, name:"done"})}> <MdCheckBox size={22} fill={this.existsInFilters('status', {id:3, name:"done"}) ? "#388e3c" : "#c7c0c0"}/> </Button></Tooltip>
+                </div>)}
+            </div>
+          </div>
+
+          <div className="clear"/>
+
+          <div className="tableWrapper">
+            <Table className="table"  aria-labelledby="tableTitle">
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    {data.length > 0 && <Checkbox color="default" className={(this.state.selected.length === data.length && data.length!==0) ? "checkbox-selected":"checkbox-not-selected"} indeterminate={this.state.selected.length > 0 && this.state.selected.length < data.length} checked={this.state.selected.length === data.length && data.length!==0} onChange={this.handleSelectAllClick}/>}
+                  </TableCell>
+                  {columns.map((row)=> (
+                    <TableCell key={row.id} width={row.width} align={row.numeric ? 'right' : 'left'} padding={'dense'} sortDirection={orderBy === row.id ? order : false}>
+                      {row.sortable ?  (<Tooltip title="Sort" placement={row.numeric ? 'bottom-end' : 'bottom-start'} enterDelay={300}>
+                        <TableSortLabel active={orderBy === row.id} direction={order} onClick={this.createSortHandler(row.id)}>{row.label}</TableSortLabel>
+                      </Tooltip>) : (<span className="label">{row.label}</span>)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {(!data.length && !this.state.loading) && (<tr><td className="small-margin-top inline-block no-results-paragraph" width="100%" colSpan={7}>We couldn't find any data.</td></tr>)}
+                {this.stableSort(data, this.getSorting(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((n) => {
+                    const isSelected = this.isSelected(n.id);
+                    return (
+                      <React.Fragment key={n.id}>
+                      <TableRow hover onClick={() => this.toggleRowExpansion(n.id)} role="checkbox" aria-checked={isSelected} tabIndex={-1}  selected={isSelected} className="enhanced-table-row">
+                        <TableCell width={"50px"} padding="checkbox">
+                          <Checkbox className={isSelected ? "checkbox-selected":"checkbox-not-selected"} onClick={(event)=>this.handleCheckboxClick(event, n.id)} checked={isSelected} color={"default"} />
+                        </TableCell>
+
+                        <TableCell className={"text-justify"} align="left" padding="none">
+                          {taskCategories.map(category=>(
+                            <div key={category.id} className="col-xs-4 col-sm-4 col-md-2 col-lg-2 no-padding">
+                              <Tooltip title={category.name.toUpperCase()}>
+                                <Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.toggleCategory(event, n.id, category)}>
+                                  {category.name==='important' && <FaExclamationTriangle className="table-row-icon important-icon" fill={n.categories.findIndex(category => category.name === 'important') !== -1 ? "#e53935": "#c7c0c0"} size={20}/>}
+                                  {category.name==="overdue" && <FaRegCalendarAlt className="table-row-icon important-icon" fill={n.categories.findIndex(category => category.name === 'overdue') !== -1  ? "#E58C0D": "#c7c0c0"} size={20}/>}
+                                  {category.name==="bookmark" && <GoBookmark className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'bookmark') !== -1  ? "#388e3c" : "#c7c0c0"} size={20}/>}
+                                  {category.name==="observe" && <GoTelescope className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'observe') !== -1  ? "#039be5" : "#c7c0c0"} size={22}/>}
+                                  {category.name==="snooze" && <IoIosMoon className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'snooze') !== -1  ? "#8e24aa" : "#c7c0c0"} size={22}/>}
+                                  {category.name==="archive" && <IoIosArchive className="table-row-icon bookmark-icon" fill={n.categories.findIndex(category => category.name === 'archive') !== -1  ? "#8d6e63" : "#c7c0c0"} size={20}/>}
+                                </Button>
+                              </Tooltip>
+                            </div>
+                          ))}
+                        </TableCell>
+                        <TableCell >{n.project.name}</TableCell>
+                        <TableCell align="left">#{n.id}</TableCell>
+                        <TableCell align="left">{n.title}</TableCell>
+                        <TableCell>
+                          {n.status === 'start' && <Tooltip title="TO DO"><GoTasklist fill={"#ff6f00"} size={20}/></Tooltip>}
+                          {n.status === 'done' && <Tooltip title="DONE"><MdCheckBox size={20} fill="#388e3c"/></Tooltip>}
+                          {n.status === 'progress' && <Tooltip title="IN PROGRESS"><GoPulse size={20} fill={"#039be5"}/></Tooltip>}
+                        </TableCell>
+                        <TableCell align="left" padding="none">
+                          <span id={"hidden-controls-right-"+n.id}>
+                            {n.status === 'start' && (
+                              <Tooltip title="IN PROGRESS">
+                                <Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'progress')}> <GoPulse size={20} fill={"#c7c0c0"}/> </Button>
+                              </Tooltip>)}
+                            {n.status === 'done' && (<Tooltip title="IN PROGRESS"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'progress')}> <GoPulse size={20} fill={"#c7c0c0"}/> </Button></Tooltip>)}
+                            {n.status === 'progress' && (
+                              <div className="inline-block">
+                                <div className="inline-block">
+                                  <Tooltip title="TO DO"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'start')}> <GoTasklist size={20} fill={"#c7c0c0"}/> </Button></Tooltip>
+                                </div>
+                                <div className="inline-block">
+                                  <Tooltip title="DONE"><Button variant="outlined" className="icon-only-button no-radius" onClick={(event)=>this.updateStatus(event, n.id, 'done')}> <MdCheckBox size={22} fill="#c7c0c0"/> </Button></Tooltip>
+                                </div>
+                              </div>)}
+                          </span>
+                        </TableCell>
+                        <TableCell align="left"><span className="label">Just now</span></TableCell>
+                      </TableRow>
+                      <TableRow className={this.state.expanded.indexOf(n.id)>=0 ? "":"hidden"}>
+                        <TableCell colSpan={8}>
+                          <p className="label">Description:</p>
+                          <p className="small-line-spacing small-bottom-space standard-font-size">{n.description}</p>
+                          <CreateNote taskId={n.id} onCreate={this.create}/>
+                          <NoteList taskId={n.id} notes={n.notes} onRemove={this.remove} onUpdate={this.update}/>
+                        </TableCell>
+                      </TableRow>
+                      </React.Fragment>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </div>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{'aria-label': 'Previous Page'}}
+            nextIconButtonProps={{'aria-label': 'Next Page',}}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+        </div>)}
       </div>
     );
   }

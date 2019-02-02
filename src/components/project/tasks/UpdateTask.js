@@ -13,28 +13,28 @@ export class UpdateTask extends React.Component{
 
   constructor(props) {
     super(props);
-    this.openUpdateDialog = this.openUpdateDialog.bind(this);
-    this.closeUpdateDialog = this.closeUpdateDialog.bind(this);
-    this.confirmUpdating = this.confirmUpdating.bind(this);
     this.updatedDescription = React.createRef();
     this.state = {
       updateDialogOpened: false
     }
   }
-  openUpdateDialog(){
+
+  openUpdateDialog = () => {
     this.setState({ updateDialogOpened: true });
-  }
-  closeUpdateDialog(){
+  };
+
+  closeUpdateDialog = () => {
     this.setState({ updateDialogOpened: false });
-  }
-  confirmUpdating(){
+  };
+
+  confirmUpdating = () => {
     if(this.updatedDescription.current && this.updatedDescription.current.value && this.updatedDescription.current.value.trim()){
       if(this.updatedDescription.current.value.trim() !== this.props.description.trim()){
         this.props.onUpdate("tasks", {id:this.props.id, description: this.updatedDescription.current.value.trim()});
       }
       this.closeUpdateDialog();
     }
-  }
+  };
 
   render(){
     return(
@@ -61,7 +61,9 @@ export class UpdateTask extends React.Component{
               You are about to change task description with the new one.
             </DialogContentText>
             <div className="bottom-space"> </div>
-            <TextField autoFocus autoComplete="off" multiline rows={5} id="name" label="Description" type="text" defaultValue={this.props.description} fullWidth inputRef={this.updatedDescription}/>
+            <form onSubmit={this.confirmUpdating}>
+              <TextField autoFocus autoComplete="off" multiline rows={5} id="name" label="Description" type="text" defaultValue={this.props.description} fullWidth inputRef={this.updatedDescription}/>
+            </form>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.closeUpdateDialog} color="primary"> Cancel </Button>
