@@ -15,7 +15,7 @@ import MenuItem from "@material-ui/core/es/MenuItem/MenuItem";
 import themes from "../utils/themes";
 import ProjectService from "../services/project.service";
 import {Spinner} from "../components/Spinner";
-import {FaPlusCircle} from "react-icons/fa";
+import {FaPlus} from "react-icons/fa";
 
 export default class ProjectsDashboard extends Component{
   constructor(props) {
@@ -147,7 +147,7 @@ export default class ProjectsDashboard extends Component{
       <div className="overflow-auto projects margin-top">
         <Snackbar anchorOrigin={{ vertical: this.state.verticalSnackBar, horizontal:this.state.horizontalSnackbar }} open={this.state.snackbarOpened} onClose={this.handleSnackbarClosing} message={<strong id="message-id">{this.state.snackbarMessage}</strong>} ContentProps={{'aria-describedby': 'message-id', 'className':'snackbar-message',}}/>
 
-        <Button className="flat-button" onClick={this.openCreateProjectDialog}><FaPlusCircle size={28} color="01B3E3"/> &nbsp;&nbsp; <span className="color-gray">New Project</span></Button>
+        <Button className="flat-button" onClick={this.openCreateProjectDialog}><FaPlus size={22} color="01B3E3"/> &nbsp;&nbsp; <span className="color-gray">New Project</span></Button>
         <form onSubmit={this.preventDefaultBehaviour} className="search-project-form pull-right">
             <TextField type="text" placeholder="Enter the project name..." autoComplete="off" id="searchProject" label="" fullWidth onKeyUp={this.filterProjects} inputRef={this.filterValue} InputProps={{startAdornment: (<InputAdornment position="start"><GoSearch /></InputAdornment>)}}/>
         </form>

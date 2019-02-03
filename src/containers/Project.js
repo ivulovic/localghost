@@ -390,7 +390,7 @@ export class Project extends React.Component {
                         <div className="inline-block table-header-section">
                           <Tooltip title="REMOVE">
                             <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.multipleRemove('tasks')}>
-                              <MdDelete size={24} fill={"#e53935"}/>
+                              <MdDelete size={24} color={"#e53935"}/>
                             </Button>
                           </Tooltip>
                         </div>
@@ -477,7 +477,7 @@ export class Project extends React.Component {
                       <TableRow className={this.state.expanded.indexOf(n.id)>=0 ? "":"hidden"}>
                         <TableCell colSpan={8}>
                           <p className="label">Description:</p>
-                          <p className="small-line-spacing small-bottom-space standard-font-size">{n.description}</p>
+                          <p className="small-line-spacing standard-font-size">{n.description}</p>
                           <UpdateTask mode="default"  taskId={n.id} title={n.title} id={n.id} description={n.description} onUpdate={this.update}/>
                           <CreateNote taskId={n.id} onCreate={this.create}/>
                           <NoteList taskId={n.id} notes={n.notes} onRemove={this.remove} onUpdate={this.update}/>

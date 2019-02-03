@@ -5,7 +5,7 @@ import Dialog from "@material-ui/core/es/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
-import {FaPlusCircle} from "react-icons/fa";
+import {FaPlus} from "react-icons/fa";
 
 export class CreateTask extends React.Component {
   constructor(props){
@@ -53,7 +53,7 @@ export class CreateTask extends React.Component {
   render(){
     return(
       <div className="inline-block">
-        <Button className="flat-button" onClick={this.openDialog}><FaPlusCircle size={28} color="01B3E3"/> &nbsp;&nbsp; <span className="color-gray">New Task </span></Button>
+        <Button className="flat-button" onClick={this.openDialog}><FaPlus size={22} color="#01B3E3"/> &nbsp;&nbsp; <span className="color-gray">New Task </span></Button>
         <Dialog maxWidth='md' fullWidth open={this.state.dialogOpened} onClose={this.closeDialog}>
           <DialogTitle id="form-dialog-title">Create Task</DialogTitle>
           <DialogContent>

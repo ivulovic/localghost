@@ -40,9 +40,7 @@ export default class Projects extends Component{
 
           <div>
             <strong className="list-title">Projects</strong>
-            <div className="text-center">
               <Spinner spin={this.state.loading}/>
-            </div>
             {(!Boolean(this.state.projects.length) && !this.state.loading) && (<p className="no-results-paragraph">
                 We couldn't find any project.
               </p>

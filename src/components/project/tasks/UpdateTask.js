@@ -55,7 +55,7 @@ export class UpdateTask extends React.Component{
 
         {this.props.mode==='default' && (
           <div className="inline-block small-margin-top minimum-space-after">
-            <Button className="no-radius color-gray" onClick={this.openUpdateDialog}><MdEdit size={20}/> &nbsp; Update</Button>
+            <Button className="flat-button" onClick={this.openUpdateDialog}><MdEdit size={24} color="#35e54c"/> &nbsp;&nbsp; <span className="color-gray">Update Task</span></Button>
           </div>
         )}
 

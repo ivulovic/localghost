@@ -36,14 +36,14 @@ export class RemoveControl extends React.Component{
         {this.props.mode==='icon' && (
           <div className="inline-block minimum-space-after">
             <Tooltip title="Remove">
-              <Button variant="outlined" className="icon-only-button no-radius" onClick={this.openRemoveDialog}><MdDelete size={20}/> </Button>
+              <Button variant="outlined" className="icon-only-button no-radius" onClick={this.openRemoveDialog}><MdDelete size={24} color="#e53935"/> </Button>
             </Tooltip>
           </div>
         )}
 
         {this.props.mode==='default' && (
           <div className="inline-block small-margin-top minimum-space-after">
-            <Button className="small-space-after no-radius color-gray" onClick={this.openRemoveDialog}><MdDelete size={20}/> &nbsp; Remove</Button>
+            <Button className="small-space-after no-radius color-gray flat-button" onClick={this.openRemoveDialog}><MdDelete size={20} color="#e53935"/> &nbsp; Remove</Button>
           </div>
         )}
 
