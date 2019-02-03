@@ -73,7 +73,7 @@ form div::after{
   background: #303538;
 }
 .red-background{
-  background: #BA3520;
+  background: #e53935;
 }
 .blue-background{
   background: #01B3E3;
@@ -92,17 +92,33 @@ form div::after{
   padding: 10px;
   border-bottom: 1px solid #c7c0c0;
 }
-.header-logo span{
-  font-size: 32px;
+.header-logo a {
+  text-decoration: none;
+}
+.logo-icon{
+  float: left;
+}
+.logo-text{
+  float: left;
+  margin-left: 10px;
+}
+.logo-text-primary{
+  text-transform: uppercase;
+  font-size: 28px;
+  font-weight: 600;
+  color: #e53935;
+  display: block;
+
+}
+.logo-text-secondary{
   color: #303538;
-  display: inline-block;
-  position: relative;
-  bottom: 5px;
+  text-transform: uppercase;
+  font-size: 14px;
 }
 
 
 .snackbar-message{
-  background: #BA3520!important;
+  background: #e53935!important;
   color: #EDEDED;
   padding: 10px;
   text-align: center!important;
@@ -205,7 +221,7 @@ form div::after{
 }
 
 .color-red{
-  color: #BA3520;
+  color: #e53935;
 }
 
 .full-width{
@@ -256,7 +272,7 @@ form div::after{
   margin-top: 25px;
 }
 .btn-submit{
-  background: #BA3520;
+  background: #e53935;
   color: #EDEDED;
   padding: 12px;
   border: none;
@@ -486,11 +502,17 @@ form div::after{
 }
 
 /*RIGHT*/
-.project-body-right{
-  /*padding: 10px 10px;*/
+.table-header-selected-row{
+  display: inline-block;
+  font-size: 16px;
+  padding: 10px;
+  text-transform: uppercase;
+  position: relative;
+  top: 3px;
+  font-weight: 600;
 }
 .table-header{
-  padding: 25px 15px;
+  padding: 15px;
   overflow: auto;
 }
 .highlight-header{
@@ -523,35 +545,8 @@ form div::after{
 .checkbox-selected svg{
   fill: #01B3E3;
 }
-/**media **/
 
-@media screen and (max-width: 998px) {
 
-}
-
-@media screen and (max-width: 850px) {
-
-}
-@media screen and (max-width: 375px) {
-  .header-menu{
-    padding: 25px 0px;
-  }
-  .header-menu li{
-    width: 100%;
-    text-align: center;
-    padding-right: 48px;
-    margin-bottom: 50px;
-  }
-  .header-menu li:last-child{
-    margin-right: 0px;
-    margin-bottom: 0px;
-  }
-  .centered-content{
-    width: 100%;
-  }
-}
-
-/*new project thumn*/
 .project-thumbnail{
   margin: 20px!important;
   float: left;
@@ -592,6 +587,71 @@ form div::after{
   font-size:32px;
   color: #363b3e;
 }
+.flat-button{
+  padding: 10px 10px!important;
+  color: #303538!important;
+}
+.theme-preview-big{
+  padding: 25px;
+}
+.label{
+  color: #7f7f87;
+  margin: 20px 0px 10px;
+}
+.standard-font-size{
+  font-size: 16px!important;
+}
+.pointer{
+  cursor: pointer;
+}
+.table-row-button{
+  background: transparent;
+}
+.table-row-icon{
+}
+
+.table-avatar div{
+  display: inline-block;
+}
+.row-small-button-icon{
+  position: relative;
+  top: 2px;
+}
+
+/**media **/
+
+@media screen and (max-width: 998px) {
+
+}
+
+@media screen and (max-width: 850px) {
+
+}
+@media screen and (max-width: 375px) {
+  .logo-icon, .logo-text {
+    display: block;
+    width: 100%;
+    margin: 0px;
+    text-align: center;
+  }
+  .header-menu{
+    padding: 25px 0px;
+  }
+  .header-menu li{
+    width: 100%;
+    text-align: center;
+    padding-right: 48px;
+    margin-bottom: 50px;
+  }
+  .header-menu li:last-child{
+    margin-right: 0px;
+    margin-bottom: 0px;
+  }
+  .centered-content{
+    width: 100%;
+  }
+}
+
 @media screen and (max-width: 975px) {
   .project-thumbnail{
     padding: 0px!important;
@@ -614,36 +674,6 @@ form div::after{
   }
 }
 
-.flat-button{
-  padding: 10px 10px!important;
-  color: #303538!important;
-}
-.theme-preview-big{
-  padding: 25px;
-}
-.label{
-  color: #7f7f87;
-  margin: 20px 0px 10px;
-}
-.standard-font-size{
-  font-size: 16px!important;
-}
-.pointer{
-  cursor: pointer;
-}
-.table-row-button{
- background: transparent;
-}
-.table-row-icon{
-}
-
-.table-avatar div{
-  display: inline-block;
-}
-.row-small-button-icon{
-  position: relative;
-  top: 2px;
-}
 
   /*Gradiesnts*/
 

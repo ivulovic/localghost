@@ -6,7 +6,6 @@ import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/es/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/es/DialogActions/DialogActions";
 import {FaPlusCircle} from "react-icons/fa";
-import {MdDelete} from "react-icons/md";
 
 export class CreateNote extends React.Component {
   constructor(props){
@@ -50,7 +49,7 @@ export class CreateNote extends React.Component {
 
   preventDefaultBehaviour = (event) => {
     event.preventDefault();
-  }
+  };
 
   render(){
     return(

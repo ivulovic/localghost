@@ -5,14 +5,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Tooltip from '@material-ui/core/Tooltip';
-import {MdCheckBox, MdDelete, MdSync} from "react-icons/md";
-import {FaExclamationTriangle, FaPlusCircle, FaRegCalendarAlt} from "react-icons/fa";
+import {MdCheckBox, MdDelete} from "react-icons/md";
+import {FaExclamationTriangle, FaRegCalendarAlt} from "react-icons/fa";
 import Button from "@material-ui/core/es/Button/Button";
-import {GoBookmark, GoPulse, GoSearch, GoSync, GoTasklist, GoTelescope} from "react-icons/go";
-import {IoIosArchive, IoIosMoon, IoIosRefresh} from "react-icons/io";
+import {GoBookmark, GoPulse, GoSearch, GoTasklist, GoTelescope} from "react-icons/go";
+import {IoIosArchive, IoIosMoon} from "react-icons/io";
 import {NoteList} from "../components/project/notes/NoteList";
 import {CreateNote} from "../components/project/notes/CreateNote";
 import {CreateTask} from "../components/project/tasks/CreateTask";
@@ -20,6 +19,7 @@ import {Spinner} from "../components/Spinner";
 import ProjectService from "../services/project.service";
 import {TextField} from "@material-ui/core";
 import InputAdornment from "@material-ui/core/es/InputAdornment/InputAdornment";
+import {UpdateTask} from "../components/project/tasks/UpdateTask";
 
 export class Project extends React.Component {
 
@@ -352,16 +352,6 @@ export class Project extends React.Component {
       {id:6, name:"archive"},
     ];
 
-    const columns = [
-      { id: 'category-controls',              sortable:false,  numeric: false, disablePadding: true, label: '', width:"300px"},
-      { id: 'project',               sortable:false,  numeric: false, disablePadding: true, label: ''},
-      { id: 'id',                    sortable:false,  numeric: false, disablePadding: true, label: '' },
-      { id: 'title',                 sortable:false,  numeric: false, disablePadding: true, label: '', width:"300px" },
-      { id: 'status',                sortable:false,  numeric: false, disablePadding: true, label: '' },
-      { id: 'status-controls', sortable:false,  numeric: false, disablePadding: true, label: '', width:"120px"},
-      { id: 'Time',                  sortable:false,  numeric: false, disablePadding: true, label: ''},
-    ];
-
     let data = this.dataWithFiltersApplied();
 
     return (
@@ -379,58 +369,51 @@ export class Project extends React.Component {
         {!this.state.loading && (
         <div className="main">
           <div className=""><p className="project-name">{this.state.project.name}</p></div>
-          <div className={this.state.selected.length > 0 ? "highlight-header table-header":"table-header"}>
-            <div className={"col-xs-12 col-sm-12 col-lg-6 col-md-6 no-padding"}>
-              {this.state.selected.length > 0 ? (<p className="table-header-title">{this.state.selected.length } selected</p>) : (<p className="table-header-title">Tasks</p>)}
-            </div>
-            <div className={"col-xs-12 col-sm-12 col-lg-6 col-md-6 no-padding text-right"}>
-              {this.state.selected.length  > 0 ? (
-                <div className="inline-block table-header-section">
-                  <Tooltip title="REMOVE">
-                    <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.multipleRemove('tasks')}>
-                      <MdDelete size={22} fill={"#e53935"}/>
-                    </Button>
-                  </Tooltip>
-                </div>
-              ) : (
-                <div className="table-header-section">
-                  {taskCategories.map((category) => (
-                    <div key={category.id} className="inline-block">
-                      <Tooltip title={category.name.toUpperCase()}>
-                        <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('category', category)}>
-                          {category.name==='important' && <FaExclamationTriangle className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#e53935": "#c7c0c0"} size={20}/>}
-                          {category.name==="overdue" && <FaRegCalendarAlt className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#E58C0D": "#c7c0c0"} size={20}/>}
-                          {category.name==="bookmark" && <GoBookmark className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#388e3c" : "#c7c0c0"} size={20}/>}
-                          {category.name==="observe" && <GoTelescope className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#039be5" : "#c7c0c0"} size={22}/>}
-                          {category.name==="snooze" && <IoIosMoon className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8e24aa" : "#c7c0c0"} size={22}/>}
-                          {category.name==="archive" && <IoIosArchive className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8d6e63" : "#c7c0c0"} size={20}/>}
-                        </Button>
-                      </Tooltip>
-                    </div>
-                  ))}
-                  <Tooltip title="TO DO"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:1, name:"start"})}> <GoTasklist size={20} fill={this.existsInFilters('status', {id:1, name:"start"}) ? "#E58C0D": "#c7c0c0"}/> </Button></Tooltip>
-                  <Tooltip title="IN PROGRESS"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:2, name:"progress"})}> <GoPulse fill={this.existsInFilters('status', {id:2, name:"progress"}) ? "#039be5" : "#c7c0c0"}/> </Button></Tooltip>
-                  <Tooltip title="DONE"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:3, name:"done"})}> <MdCheckBox size={22} fill={this.existsInFilters('status', {id:3, name:"done"}) ? "#388e3c" : "#c7c0c0"}/> </Button></Tooltip>
-                </div>)}
-            </div>
-          </div>
 
           <div className="clear"/>
 
           <div className="tableWrapper">
             <Table className="table"  aria-labelledby="tableTitle">
-              <TableHead>
+              <TableHead height={"80px"}>
                 <TableRow>
-                  <TableCell padding="checkbox">
+                  <TableCell padding="checkbox" colSpan={2}>
                     {data.length > 0 && <Checkbox color="default" className={(this.state.selected.length === data.length && data.length!==0) ? "checkbox-selected":"checkbox-not-selected"} indeterminate={this.state.selected.length > 0 && this.state.selected.length < data.length} checked={this.state.selected.length === data.length && data.length!==0} onChange={this.handleSelectAllClick}/>}
+                    {this.state.selected.length  > 0 ? (
+                      <div className="inline-block table-header-section">
+                        <span className={"table-header-selected-row"}>{this.state.selected.length} selected</span>
+                      </div>
+                    ) : ''}
                   </TableCell>
-                  {columns.map((row)=> (
-                    <TableCell key={row.id} width={row.width} align={row.numeric ? 'right' : 'left'} padding={'dense'} sortDirection={orderBy === row.id ? order : false}>
-                      {row.sortable ?  (<Tooltip title="Sort" placement={row.numeric ? 'bottom-end' : 'bottom-start'} enterDelay={300}>
-                        <TableSortLabel active={orderBy === row.id} direction={order} onClick={this.createSortHandler(row.id)}>{row.label}</TableSortLabel>
-                      </Tooltip>) : (<span className="label">{row.label}</span>)}
-                    </TableCell>
-                  ))}
+                  <TableCell padding="none" colSpan={6}>
+                    <div className="table-header-section text-right">
+                      {this.state.selected.length  > 0 ? (
+                        <div className="inline-block table-header-section">
+                          <Tooltip title="REMOVE">
+                            <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.multipleRemove('tasks')}>
+                              <MdDelete size={24} fill={"#e53935"}/>
+                            </Button>
+                          </Tooltip>
+                        </div>
+                      ) : ''}
+                      {taskCategories.map((category) => (
+                        <div key={category.id} className="inline-block">
+                          <Tooltip title={category.name.toUpperCase()}>
+                            <Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('category', category)}>
+                              {category.name==='important' && <FaExclamationTriangle className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#e53935": "#c7c0c0"} size={20}/>}
+                              {category.name==="overdue" && <FaRegCalendarAlt className="table-row-icon important-icon" fill={this.existsInFilters('category', category) ? "#E58C0D": "#c7c0c0"} size={20}/>}
+                              {category.name==="bookmark" && <GoBookmark className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#388e3c" : "#c7c0c0"} size={20}/>}
+                              {category.name==="observe" && <GoTelescope className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#039be5" : "#c7c0c0"} size={22}/>}
+                              {category.name==="snooze" && <IoIosMoon className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8e24aa" : "#c7c0c0"} size={22}/>}
+                              {category.name==="archive" && <IoIosArchive className="table-row-icon bookmark-icon" fill={this.existsInFilters('category', category) ? "#8d6e63" : "#c7c0c0"} size={20}/>}
+                            </Button>
+                          </Tooltip>
+                        </div>
+                      ))}
+                      <Tooltip title="TO DO"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:1, name:"start"})}> <GoTasklist size={20} fill={this.existsInFilters('status', {id:1, name:"start"}) ? "#E58C0D": "#c7c0c0"}/> </Button></Tooltip>
+                      <Tooltip title="IN PROGRESS"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:2, name:"progress"})}> <GoPulse fill={this.existsInFilters('status', {id:2, name:"progress"}) ? "#039be5" : "#c7c0c0"}/> </Button></Tooltip>
+                      <Tooltip title="DONE"><Button variant="outlined" className="icon-only-button no-radius" onClick={()=>this.toggleFilter('status', {id:3, name:"done"})}> <MdCheckBox size={22} fill={this.existsInFilters('status', {id:3, name:"done"}) ? "#388e3c" : "#c7c0c0"}/> </Button></Tooltip>
+                    </div>
+                  </TableCell>
                 </TableRow>
               </TableHead>
 
@@ -495,6 +478,7 @@ export class Project extends React.Component {
                         <TableCell colSpan={8}>
                           <p className="label">Description:</p>
                           <p className="small-line-spacing small-bottom-space standard-font-size">{n.description}</p>
+                          <UpdateTask mode="default"  taskId={n.id} title={n.title} id={n.id} description={n.description} onUpdate={this.update}/>
                           <CreateNote taskId={n.id} onCreate={this.create}/>
                           <NoteList taskId={n.id} notes={n.notes} onRemove={this.remove} onUpdate={this.update}/>
                         </TableCell>

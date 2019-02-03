@@ -13,6 +13,7 @@ export class UpdateTask extends React.Component{
 
   constructor(props) {
     super(props);
+    this.updatedTitle = React.createRef();
     this.updatedDescription = React.createRef();
     this.state = {
       updateDialogOpened: false
@@ -28,17 +29,21 @@ export class UpdateTask extends React.Component{
   };
 
   confirmUpdating = () => {
-    if(this.updatedDescription.current && this.updatedDescription.current.value && this.updatedDescription.current.value.trim()){
-      if(this.updatedDescription.current.value.trim() !== this.props.description.trim()){
-        this.props.onUpdate("tasks", {id:this.props.id, description: this.updatedDescription.current.value.trim()});
+    if(this.updatedDescription.current && this.updatedDescription.current.value && this.updatedDescription.current.value.trim() && this.updatedTitle.current && this.updatedTitle.current.value && this.updatedTitle.current.value.trim()){
+      if(this.updatedTitle.current.value.trim() !== this.props.title.trim() || this.updatedDescription.current.value.trim() !== this.props.description.trim()){
+        this.props.onUpdate("tasks", {id:this.props.id, title: this.updatedTitle.current.value.trim(), description: this.updatedDescription.current.value.trim()}, this.props.taskId, this.props.id);
       }
       this.closeUpdateDialog();
     }
   };
 
+  preventDefaultBehaviour = (event) => {
+    event.preventDefault();
+  };
+
   render(){
     return(
-      <div className="inline-block">
+      <div className="inline-block small-bottom-space">
 
         {this.props.mode==='icon' && (
           <div className="inline-block">
@@ -50,7 +55,7 @@ export class UpdateTask extends React.Component{
 
         {this.props.mode==='default' && (
           <div className="inline-block small-margin-top minimum-space-after">
-            <Button variant="outlined" className="no-radius color-gray" onClick={this.openUpdateDialog}><MdEdit size={20}/> &nbsp; Update</Button>
+            <Button className="no-radius color-gray" onClick={this.openUpdateDialog}><MdEdit size={20}/> &nbsp; Update</Button>
           </div>
         )}
 
@@ -58,11 +63,13 @@ export class UpdateTask extends React.Component{
           <DialogTitle id="form-dialog-title">UPDATE TASK</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              You are about to change task description with the new one.
+              You are about to change task content with the new one.
             </DialogContentText>
-            <div className="bottom-space"> </div>
-            <form onSubmit={this.confirmUpdating}>
-              <TextField autoFocus autoComplete="off" multiline rows={5} id="name" label="Description" type="text" defaultValue={this.props.description} fullWidth inputRef={this.updatedDescription}/>
+            <form onSubmit={this.preventDefaultBehaviour}>
+              <div className="bottom-space"/>
+              <TextField autoFocus autoComplete="off" id="title" label="Title" type="text" defaultValue={this.props.title} fullWidth inputRef={this.updatedTitle}/>
+              <div className="bottom-space"/>
+              <TextField autoFocus autoComplete="off" multiline rows={5} id="description" label="Description" type="text" defaultValue={this.props.description} fullWidth inputRef={this.updatedDescription}/>
             </form>
           </DialogContent>
           <DialogActions>

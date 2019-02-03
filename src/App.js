@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Route, Switch, BrowserRouter, NavLink} from "react-router-dom";
+import {Route, Switch, BrowserRouter} from "react-router-dom";
 import { browserHistory } from "react-dom";
 import Search from "./components/Search";
 import Login from "./components/Login";
